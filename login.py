@@ -9,7 +9,7 @@ group_urls = {
 }
 
 # 特別なURLを定義します
-special_url = "https://llmcou.streamlit.app/"
+special_url = "https://www.google.com"
 
 # participants.txtファイルからIDとグループを読み込む関数
 def load_participants(file_path):
