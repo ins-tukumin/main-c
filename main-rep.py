@@ -150,8 +150,8 @@ if user_id:
         # 環境変数を読み込む
         type = st.secrets["type"]
         project_id = st.secrets["project_id"]
-        pk_id = st.secrets["private_key_id"]
-        pk = st.secrets["private_key"].replace('\\n', '\n')
+        pk_id = st.secrets["pk_id"]
+        pk = st.secrets["pk"].replace('\\n', '\n')
         client_email = st.secrets["client_email"]
         client_id = st.secrets["client_id"]
         auth_uri = st.secrets["auth_uri"]
