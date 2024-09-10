@@ -38,41 +38,19 @@ if "past" not in st.session_state:
 # クエリパラメータからユーザーIDを取得
 #query_params = st.query_params
 query_params = st.experimental_get_query_params()
-#st.write("クエリパラメータ:", query_params)
 user_id = query_params.get('user_id', [None])[0]
 group = query_params.get('group', [None])[0]
 is_second = 'second' in query_params
-#st.write(f"型: {type(user_id)}") 
 user_id = int(user_id)
-#st.write(f"こんにちは、{user_id}さん！")
-
-
-        
-#st.write(f"file_path:{file_path}")
-#file_path = 'worry2.txt'
-    
-# 環境変数の読み込み
-#from dotenv import load_dotenv
-#load_dotenv()
-#if 'worries' in st.session_state:
-#    st.write(st.session_state.worries)  # デバッグ用
-#    if user_id in st.session_state.worries:
-#        st.write(f"Worry found for user: {st.session_state.worries[user_id]}")  # デバッグ用
-#    else:
-#        st.write("User id not found in worries")
-
 
 if "initialized" not in st.session_state:
     st.session_state['initialized'] = False
     initial_message = "今日の振り返りをしよう！。今日はどんな一日だった？"
     st.session_state.initge.append(initial_message)
-#    st.session_state.past.append("")
-#    message(st.session_state.initge[0], key="init_greeting", avatar_style="micah")
     st.session_state['initialized'] = True
 
 # テンプレートの設定
 template = """
-    敬語は使わないでください。私の友達になったつもりで砕けた口調で話してください。
     100字以内で話してください。
     さらに、この会話では「エピソード記憶」を積極的に話題に出して会話してほしいです。エピソード記憶という言葉の意味は以下に示します。
     # エピソード記憶とは、人間の記憶の中でも特に個人的な経験や出来事を覚える記憶の種類の一つです。エピソード記憶は、特定の時間と場所に関連する出来事を含む記憶であり、過去の個人的な経験を詳細に思い出すことができる記憶を指します。
@@ -98,20 +76,8 @@ prompt = PromptTemplate(
     input_variables=["chat_history", "context", "message"],
     template=template,
 )
-
-# UIの設定
-#user_id = st.text_input("IDを入力してエンターを押してください")
-
-#with st.sidebar:
-    #user_api_key = st.text_input(
-        #label="OpenAI API key",
-        #placeholder="Paste your OpenAI API key",
-        #type="password"
-    #)
-    #os.environ['OPENAI_API_KEY'] = user_api_key
 select_model = "gpt-4o"
 select_temperature = 0.0
-
 hide_streamlit_style = """
                 <style>
                 div[data-testid="stToolbar"] {
@@ -254,29 +220,6 @@ if user_id:
             else:
                 user_message = st.text_area("内容を入力して送信ボタンを押してください", key="user_message")
                 st.button("送信", on_click=on_input_change)
-        # ターン数に応じた機能を追加
-        #--------------------------------------------
-        #if "messages" not in st.session_state:
-            #st.session_state.messages = []
-
-        #for message in st.session_state.messages:
-        # with st.chat_message(message["role"]):
-                #st.markdown(message["content"])
-
-        #prompt_input = st.chat_input("入力してください", key="propmt_input")
-
-        #if prompt_input:
-            #st.session_state.messages.append({"role": "user", "content": prompt_input})
-            #with st.chat_message("user"):
-                #st.markdown(prompt_input)
-
-            #with st.chat_message("assistant"):
-                #with st.spinner("Thinking..."):
-                    #response = chain({"message": prompt_input})
-                    #st.markdown(response["answer"])
-            
-            #st.session_state.messages.append({"role": "assistant", "content": response["answer"]})
-
     else:
         st.error(f"No vector database found for student ID {user_id}.")
 
