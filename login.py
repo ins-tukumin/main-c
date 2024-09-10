@@ -33,7 +33,7 @@ st.title("ログインページ")
 participants = load_participants('group_assignment.txt')
 
 # ユーザー入力を受け取る
-user_id = st.text_input("学籍番号を半角で入力してください")
+user_id = st.text_input("クラウドワークスID入力してください")
 if st.button("ログイン"):
     if user_id:
         if user_id == "xxxx":
