@@ -242,21 +242,32 @@ if user_id:
     #st.write(f"こんにちは、{user_id}さん！")
     # 初期済みでない場合は初期化処理を行う
     if not firebase_admin._apps:
-            private_key = st.secrets["private_key"].replace('\\n', '\n')
-            cred = credentials.Certificate({
-                "type": "service_account",
-                "project_id": "main-c-ed1fe",
-                "private_key_id": "d607e9e2aa50b1a4901874aefc16e4739c59cbef",
-                "private_key": private_key,
-                "client_email": "firebase-adminsdk-jnw4m@main-c-ed1fe.iam.gserviceaccount.com",
-                "client_id": "102007782555008111692",
-                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                "token_uri": "https://oauth2.googleapis.com/token",
-                "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-                "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-jnw4m%40main-c-ed1fe.iam.gserviceaccount.com",
-                "universe_domain": "googleapis.com"
-                }) 
-            default_app = firebase_admin.initialize_app(cred)
+        type = st.secrets["type"]
+        project_id = st.secrets["project_id"]
+        private_key_id = st.secrets["private_key_id"]
+        private_key = st.secrets["private_key"].replace('\\n', '\n')
+        client_email = st.secrets["client_email"]
+        client_id = st.secrets["client_id"]
+        auth_uri = st.secrets["auth_uri"]
+        token_uri = st.secrets["token_uri"]
+        auth_provider_x509_cert_url = st.secrets["auth_provider_x509_cert_url"]
+        client_x509_cert_url = st.secrets["client_x509_cert_url"]
+        universe_domain = st.secrets["universe_domain"]
+        # Firebase認証情報を設定
+        cred = credentials.Certificate({
+            "type": type,
+            "project_id": project_id,
+            "private_key_id": private_key_id,
+            "private_key": private_key,
+            "client_email": client_email,
+            "client_id": client_id,
+            "auth_uri": auth_uri,
+            "token_uri": token_uri,
+            "auth_provider_x509_cert_url": auth_provider_x509_cert_url,
+            "client_x509_cert_url": client_x509_cert_url,
+            "universe_domain": universe_domain
+            }) 
+        default_app = firebase_admin.initialize_app(cred)
     db = firestore.client()
 
     #generate_initial_message()
