@@ -37,40 +37,40 @@ is_second = 'second' in query_params
 user_id =int(user_id)
 
 # worry.txtファイルを読み込み
-def load_worries(file_path, encoding):
-    worries = {}
-    try:
-        with open(file_path, 'r', encoding=encoding) as file:
-            for line in file:
-                user_id, worry = line.strip().split(',', 1)
-                worries[int(user_id)] = worry
-    except Exception as e:
-        st.write(f"Error loading worries: {e}")  # エラー表示用
-    return worries
+#def load_worries(file_path, encoding):
+#    worries = {}
+#    try:
+#        with open(file_path, 'r', encoding=encoding) as file:
+#            for line in file:
+#                user_id, worry = line.strip().split(',', 1)
+#                worries[int(user_id)] = worry
+#    except Exception as e:
+#        st.write(f"Error loading worries: {e}")  # エラー表示用
+#    return worries
 
 # 特定のユーザーIDに対応する悩みテーマを取得
-def get_user_worry(user_id, worries):
-    return worries.get(user_id, None)
+#def get_user_worry(user_id, worries):
+#    return worries.get(user_id, None)
 
 # データを読み込み
-if is_second:
-    if group in ['groupd', 'grouph']:
-        file_path = 'worry1.txt'
-    elif group in ['groupc', 'groupg']:
-        file_path = 'worry2.txt'
-else:
-    if group in ['groupa', 'groupe']:
-        file_path = 'worry1.txt'
-    elif group in ['groupb', 'groupf']:
-        file_path = 'worry2.txt'
+#if is_second:
+#    if group in ['groupd', 'grouph']:
+#        file_path = 'worry1.txt'
+#    elif group in ['groupc', 'groupg']:
+#        file_path = 'worry2.txt'
+#else:
+#    if group in ['groupa', 'groupe']:
+#        file_path = 'worry1.txt'
+#    elif group in ['groupb', 'groupf']:
+#        file_path = 'worry2.txt'
     
-if 'worries' not in st.session_state:
-    for enc in ['utf-8', 'shift_jis', 'iso-2022-jp']:
-        st.session_state.worries = load_worries(file_path, encoding=enc)
-        if st.session_state.worries:
-            break
-if 'worry' not in st.session_state:
-    st.session_state.worry = get_user_worry(user_id, st.session_state.worries)
+#if 'worries' not in st.session_state:
+#    for enc in ['utf-8', 'shift_jis', 'iso-2022-jp']:
+#        st.session_state.worries = load_worries(file_path, encoding=enc)
+#        if st.session_state.worries:
+#            break
+#if 'worry' not in st.session_state:
+#    st.session_state.worry = get_user_worry(user_id, st.session_state.worries)
 # 環境変数の読み込み
 #from dotenv import load_dotenv
 #load_dotenv()
@@ -83,7 +83,7 @@ if 'worry' not in st.session_state:
 
 if "initialized" not in st.session_state:
     st.session_state['initialized'] = False
-    initial_message = f"今回はあなたの、{st.session_state.worry}について会話しましょう。気軽に話してね"
+    initial_message = "今日の振り返りをしよう！。今日はどんな一日だった？"
     st.session_state.initge.append(initial_message)
 #    #st.session_state.past.append("")
 #    message(st.session_state.initge[0], key="init_greeting", avatar_style="micah")
@@ -93,7 +93,6 @@ if "initialized" not in st.session_state:
 #プロンプトテンプレートを作成
 #悩みは{st.session_state.worry}です。悩みは知らないはず。このボットは。
 template = """
-    この会話では私のお悩み相談に乗ってほしいです。
     敬語は使わないでください。私の友達になったつもりで砕けた口調で話してください。
     100字以内で話してください。
     日本語で話してください。
@@ -212,12 +211,12 @@ def on_input_change():
     st.session_state.past.append(user_message)
 
     st.session_state.user_message = ""
-    Human_Agent = "Human" 
-    AI_Agent = "AI" 
+    Agent_1_Human = "Human" 
+    Agent_2_AI = "AI" 
     doc_ref = db.collection(str(user_id)).document(str(now))
     doc_ref.set({
-        Human_Agent: user_message,
-        AI_Agent: answer
+        Agent_1_Human: user_message,
+        Agent_2_AI: answer
     })
 
 # qualtricdへURL遷移
@@ -246,17 +245,17 @@ if user_id:
             private_key = st.secrets["private_key"].replace('\\n', '\n')
             cred = credentials.Certificate({
                 "type": "service_account",
-                "project_id": "llm-relationship",
-                "private_key_id": "770f8e195ab1bba877187f0ed16c68f0c3ec8c05",
+                "project_id": "main-c-ed1fe",
+                "private_key_id": "d607e9e2aa50b1a4901874aefc16e4739c59cbef",
                 "private_key": private_key,
-                "client_email": "firebase-adminsdk-3n06z@llm-relationship.iam.gserviceaccount.com",
-                "client_id": "108943603880556393851",
+                "client_email": "firebase-adminsdk-jnw4m@main-c-ed1fe.iam.gserviceaccount.com",
+                "client_id": "102007782555008111692",
                 "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                 "token_uri": "https://oauth2.googleapis.com/token",
                 "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-                "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-3n06z%40llm-relationship.iam.gserviceaccount.com",
+                "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-jnw4m%40main-c-ed1fe.iam.gserviceaccount.com",
                 "universe_domain": "googleapis.com"
-            }) 
+                }) 
             default_app = firebase_admin.initialize_app(cred)
     db = firestore.client()
 
