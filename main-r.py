@@ -46,44 +46,11 @@ is_second = 'second' in query_params
 user_id = int(user_id)
 #st.write(f"こんにちは、{user_id}さん！")
 
-# worry.txtファイルを読み込み
-def load_worries(file_path, encoding):
-    worries = {}
-    try:
-        with open(file_path, 'r', encoding=encoding) as file:
-            for line in file:
-                user_id, worry = line.strip().split(',', 1)
-                worries[int(user_id)] = worry
-    except Exception as e:
-        st.write(f"Error loading worries: {e}")  # エラー表示用
-    return worries
 
-# 特定のユーザーIDに対応する悩みテーマを取得
-def get_user_worry(user_id, worries):
-    return worries.get(user_id, None)
-
-# データを読み込み
-if is_second:
-    if group in ['groupb']:
-        file_path = 'worry1.txt'
-    elif group in ['groupa']:
-        file_path = 'worry2.txt'
-else:
-    if group in ['groupc']:
-        file_path = 'worry1.txt'
-    elif group in ['groupd']:
-        file_path = 'worry2.txt'
         
 #st.write(f"file_path:{file_path}")
 #file_path = 'worry2.txt'
     
-if 'worries' not in st.session_state:
-    for enc in ['utf-8', 'shift_jis', 'iso-2022-jp']:
-        st.session_state.worries = load_worries(file_path, encoding=enc)
-        if st.session_state.worries:
-            break
-if 'worry' not in st.session_state:
-    st.session_state.worry = get_user_worry(user_id, st.session_state.worries)
 # 環境変数の読み込み
 #from dotenv import load_dotenv
 #load_dotenv()
@@ -97,7 +64,7 @@ if 'worry' not in st.session_state:
 
 if "initialized" not in st.session_state:
     st.session_state['initialized'] = False
-    initial_message = f"今回はあなたの、{st.session_state.worry}について会話しましょう。気軽に話してね"
+    initial_message = "今日の振り返りをしよう！。今日はどんな一日だった？"
     st.session_state.initge.append(initial_message)
 #    st.session_state.past.append("")
 #    message(st.session_state.initge[0], key="init_greeting", avatar_style="micah")
@@ -105,15 +72,10 @@ if "initialized" not in st.session_state:
 
 # テンプレートの設定
 template = """
-    私の日記情報を添付します。
-    この日記を読んで、私の事をよく理解した上で会話してください。
-    この会話では私のお悩み相談に乗ってほしいです。
-    必要に応じて、私の日記に書かれている情報を参照して、私の事を理解して会話してください。
-    ただ、”あなたの日記を読んでみると”といったような、日記を読んだ動作を直接示すような言葉は出力に含めないでください。
     敬語は使わないでください。私の友達になったつもりで砕けた口調で話してください。
     100字以内で話してください。
     日本語で話してください。
-    Use the following context (delimited by <ctx></ctx>) and the chat history (delimited by <hs></hs>) to answer the question. :
+    私の入力に基づき、次の文脈（<ctx></ctx>で囲まれた部分）とチャット履歴（<hs></hs>で囲まれた部分）を使用して回答してください。:
     ------
     <ctx>
     {context}
@@ -123,13 +85,13 @@ template = """
     {chat_history}
     </hs>
     ------
-    {question}
+    {message}
     Answer:
     """
 
 # 会話のテンプレートを作成
 prompt = PromptTemplate(
-    input_variables=["chat_history", "context", "question"],
+    input_variables=["chat_history", "context", "message"],
     template=template,
 )
 
@@ -185,19 +147,18 @@ if user_id:
         private_key = st.secrets["private_key"].replace('\\n', '\n')
         # Firebase認証情報を設定
         cred = credentials.Certificate({
-            "type": "service_account",
-            "project_id": "rag-relationships",
-            "private_key_id": "ec34f0c5346c00aee00a5955b995dbce5cb6424d",
-            #"private_key_id": private_key_id,
-            "private_key": private_key,
-            "client_email": "firebase-adminsdk-it39e@rag-relationships.iam.gserviceaccount.com",
-            "client_id": "100272767552515251929",
-            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-            "token_uri": "https://oauth2.googleapis.com/token",
-            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-            "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-it39e%40rag-relationships.iam.gserviceaccount.com",
-            "universe_domain": "googleapis.com"
-        })
+                "type": "service_account",
+                "project_id": "main-r",
+                "private_key_id": "ffc5a139288747153f225cc9cf2381c334cda3c3",
+                "private_key": private_key,
+                "client_email": "firebase-adminsdk-m1jdu@main-r.iam.gserviceaccount.com",
+                "client_id": "114270809957158975243",
+                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                "token_uri": "https://oauth2.googleapis.com/token",
+                "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+                "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-m1jdu%40main-r.iam.gserviceaccount.com",
+                "universe_domain": "googleapis.com"
+                })
         default_app = firebase_admin.initialize_app(cred)
     db = firestore.client()
     
@@ -248,18 +209,18 @@ if user_id:
             st.session_state.count += 1
             user_message = st.session_state.user_message
             with st.spinner("相手からの返信を待っています。。。"):
-                response = chain({"question": user_message})
+                response = chain({"message": user_message})
                 response_text = response["answer"]
             st.session_state.past.append(user_message)
             st.session_state.generated.append(response_text)
             st.session_state.user_message = ""
             #st.session_state["user_message"] = ""
-            Human_Agent = "Human" 
-            AI_Agent = "AI" 
+            Agent_1_Human_Agent = "Human" 
+            Agent_2_AI_Agent = "AI" 
             doc_ref = db.collection(str(user_id)).document(str(now))
             doc_ref.set({
-                Human_Agent: user_message,
-                AI_Agent: response_text
+                Agent_1_Human_Agent: user_message,
+                Agent_2_AI_Agent: response_text
             })
         # 会話履歴を表示するためのスペースを確保
         chat_placeholder = st.empty()
@@ -285,7 +246,7 @@ if user_id:
             #st.session_state.messages = []
 
         #for message in st.session_state.messages:
-           # with st.chat_message(message["role"]):
+        # with st.chat_message(message["role"]):
                 #st.markdown(message["content"])
 
         #prompt_input = st.chat_input("入力してください", key="propmt_input")
@@ -297,7 +258,7 @@ if user_id:
 
             #with st.chat_message("assistant"):
                 #with st.spinner("Thinking..."):
-                    #response = chain({"question": prompt_input})
+                    #response = chain({"message": prompt_input})
                     #st.markdown(response["answer"])
             
             #st.session_state.messages.append({"role": "assistant", "content": response["answer"]})
