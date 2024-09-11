@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-import random
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfbase.ttfonts import TTFont
@@ -31,26 +30,9 @@ output_folder = 'vector_lab_pdfs'
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 
-# 学籍番号のリストを取得
-student_ids = df['名前'].unique()
-
-# 6桁の乱数を生成する関数
-def generate_unique_random_numbers(n, length=6):
-    random_numbers = set()
-    while len(random_numbers) < n:
-        random_number = ''.join(random.choices('0123456789', k=length))
-        random_numbers.add(random_number)
-    return list(random_numbers)
-
-# 学籍番号の数だけ6桁の乱数を生成
-random_numbers = generate_unique_random_numbers(len(student_ids))
-
-# 学籍番号と乱数の対応を保存する辞書
-student_id_to_random = dict(zip(student_ids, random_numbers))
-
 # PDFを作成する関数
-def create_pdf(random_number, diary_entries):
-    pdf_file_name = os.path.join(output_folder, f"{random_number}.pdf")
+def create_pdf(student_id, diary_entries):
+    pdf_file_name = os.path.join(output_folder, f"{student_id}.pdf")
     doc = SimpleDocTemplate(pdf_file_name, pagesize=A4)
     
     # フォントの登録
@@ -82,13 +64,12 @@ def create_pdf(random_number, diary_entries):
     print(f"PDF saved as {pdf_file_name}")
 
 # 学籍番号ごとにデータをグループ化し、PDFを生成
-grouped = df.groupby('名前')
+grouped = df.groupby('学籍番号')
 
 for student_id, group in grouped:
-    random_number = student_id_to_random[student_id]
-    create_pdf(random_number, group)
+    create_pdf(student_id, group)
 
-# 学籍番号と乱数の対応を"ID_Number.pdf"に出力
+# 学籍番号を"ID_Number.pdf"に出力
 id_number_pdf_path = os.path.join(output_folder, "ID_Number.pdf")
 doc = SimpleDocTemplate(id_number_pdf_path, pagesize=A4)
 styles = getSampleStyleSheet()
@@ -103,9 +84,9 @@ pdfmetrics.registerFont(TTFont('IPAexGothic', 'fonts/ipaexg.ttf'))
 
 elements = []
 
-for student_id, random_number in student_id_to_random.items():
-    elements.append(Paragraph(f"{student_id} : {random_number}", styleN))
+for student_id, group in grouped:
+    elements.append(Paragraph(f"{student_id}", styleN))
     elements.append(Spacer(1, 12))
 
 doc.build(elements)
-print(f"ID and random number mapping saved as {id_number_pdf_path}")
+print(f"ID list saved as {id_number_pdf_path}")
