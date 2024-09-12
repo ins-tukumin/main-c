@@ -42,6 +42,7 @@ if "initialized" not in st.session_state:
 
 #プロンプトテンプレートを作成
 template = """
+    今日の出来事を振り返って、ユーザーに自由に感想を語ってもらいましょう。適度な問いかけを行って、会話を促進してください。
     敬語は使わないでください。私の友達になったつもりで砕けた口調で話してください。
     100字以内で話してください。
     日本語で話してください。
@@ -93,7 +94,7 @@ def load_conversation():
     if not hasattr(st.session_state, "conversation"):
         llm = ChatOpenAI(
             model_name=model_select,
-            temperature=0
+            temperature=0.5
         )
         memory = ConversationBufferMemory(return_messages=True)
         st.session_state.conversation = ConversationChain(

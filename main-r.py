@@ -49,9 +49,11 @@ if "initialized" not in st.session_state:
 
 # テンプレートの設定
 template = """
+    今日の出来事を振り返って、ユーザーに自由に感想を語ってもらいましょう。適度な問いかけを行って、会話を促進してください。
     敬語は使わないでください。私の友達になったつもりで砕けた口調で話してください。
     100字以内で話してください。
     日本語で話してください。
+    私が書いた日記を適宜抜粋して提供します。この情報も手助けにして、私のことを理解しようとしてみてください。
     私の入力に基づき、次の文脈（<ctx></ctx>で囲まれた部分）とチャット履歴（<hs></hs>で囲まれた部分）を使用して回答してください。:
     ------
     <ctx>
@@ -72,7 +74,7 @@ prompt = PromptTemplate(
     template=template,
 )
 select_model = "gpt-4o"
-select_temperature = 0.0
+select_temperature = 0.5
 
 hide_streamlit_style = """
                 <style>
