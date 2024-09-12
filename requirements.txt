@@ -11,3 +11,4 @@ pysqlite3-binary
 chromadb 
 langchain_community
 tiktoken
+protobuf==3.20.3
