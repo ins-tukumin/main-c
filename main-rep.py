@@ -67,13 +67,13 @@ template = """
     {chat_history}
     </hs>
     ------
-    {message}
+    {question}
     Answer:
     """
 
 # 会話のテンプレートを作成
 prompt = PromptTemplate(
-    input_variables=["chat_history", "context", "message"],
+    input_variables=["chat_history", "context", "question"],
     template=template,
 )
 select_model = "gpt-4o"
