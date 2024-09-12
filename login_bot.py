@@ -3,7 +3,7 @@ import random
 
 # 各グループに対応するURLを定義します
 group_urls = {
-    "groupa": "https://mainc.streamlit.app/",
+    "groupa": "https://chat-c.streamlit.app/",
     "groupb": "https://mainr.streamlit.app/",
     "groupc": "https://mainrep.streamlit.app/"
 }
