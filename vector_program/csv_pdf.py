@@ -7,11 +7,11 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 
 # CSVファイルの読み込み
-file_path = 'csvs/test0704.csv'
+file_path = 'csvs/test_selected_file.csv'
 df = pd.read_csv(file_path)
 
 # 不要な列を削除
-df = df.drop(columns=['タイムスタンプ', '学籍番号'])
+# df = df.drop(columns=['タイムスタンプ', '学籍番号'])
 
 # 不要な改行やスペースを取り除く関数
 def clean_text(text):
@@ -21,10 +21,10 @@ def clean_text(text):
     return text
 
 # テキスト列をクリーンアップ
-df['日記'] = df['日記'].apply(clean_text)
+df['Q1'] = df['Q1'].apply(clean_text)
 
 # 出力フォルダーのパスを指定
-output_folder = 'vector_lab_pdfs'
+output_folder = 'pdfs'
 
 # 出力フォルダが存在しない場合は作成
 if not os.path.exists(output_folder):
@@ -55,8 +55,8 @@ def create_pdf(student_id, diary_entries):
     
     # 各エントリの出力
     for index, row in diary_entries.iterrows():
-        elements.append(Paragraph(row['日付'], styleN))
-        elements.append(Paragraph(row['日記'], styleN))
+        elements.append(Paragraph(row['StartDate_month_day'], styleN))
+        elements.append(Paragraph(row['Q1'], styleN))
         elements.append(Spacer(1, 12))
     
     # PDFの生成
@@ -64,7 +64,7 @@ def create_pdf(student_id, diary_entries):
     print(f"PDF saved as {pdf_file_name}")
 
 # 学籍番号ごとにデータをグループ化し、PDFを生成
-grouped = df.groupby('学籍番号')
+grouped = df.groupby('user_id')
 
 for student_id, group in grouped:
     create_pdf(student_id, group)

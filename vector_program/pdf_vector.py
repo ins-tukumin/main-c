@@ -7,10 +7,10 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
 # PDFが格納されているディレクトリ
-pdf_directory = "./outputs"
+pdf_directory = "./pdfs"
 
 # ベクトルデータベースを保存するディレクトリ
-db_directory = "./vector_databases"
+db_directory = "../vector_participant"
 
 # 各PDFファイルに対してベクトルデータベースを作成
 for pdf_file in os.listdir(pdf_directory):
