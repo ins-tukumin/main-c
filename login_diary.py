@@ -3,9 +3,9 @@ import random
 
 # 各グループに対応するURLを定義します
 group_urls = {
-    "groupa": "https://www.google.com",
-    "groupb": "https://www.google.com",
-    "groupc": "https://www.google.com"
+    "groupa": "https://nagoyapsychology.qualtrics.com/jfe/form/SV_55DnU55WeDglj4G",
+    "groupb": "https://nagoyapsychology.qualtrics.com/jfe/form/SV_55DnU55WeDglj4G",
+    "groupc": "https://nagoyapsychology.qualtrics.com/jfe/form/SV_55DnU55WeDglj4G"
 }
 
 # 特別なURLを定義します
