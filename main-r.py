@@ -43,7 +43,7 @@ user_id = int(user_id)
 
 if "initialized" not in st.session_state:
     st.session_state['initialized'] = False
-    initial_message = "今日の振り返りをしよう！。今日はどんな一日だった？"
+    initial_message = "今日の振り返りをしよう！今日はどんな一日だった？"
     st.session_state.initge.append(initial_message)
     st.session_state['initialized'] = True
 
