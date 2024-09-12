@@ -184,7 +184,7 @@ if user_id:
             st.session_state.count += 1
             user_message = st.session_state.user_message
             with st.spinner("相手からの返信を待っています。。。"):
-                response = chain({"message": user_message})
+                response = chain({"question": user_message})
                 response_text = response["answer"]
             st.session_state.past.append(user_message)
             st.session_state.generated.append(response_text)
