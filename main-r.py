@@ -190,8 +190,8 @@ if user_id:
             st.session_state.generated.append(response_text)
             st.session_state.user_message = ""
             #st.session_state["user_message"] = ""
-            Agent_1_Human_Agent = "Human" 
-            Agent_2_AI_Agent = "AI" 
+            Agent_1_Human_Agent = "1.Human" 
+            Agent_2_AI_Agent = "2.AI" 
             doc_ref = db.collection(str(user_id)).document(str(now))
             doc_ref.set({
                 Agent_1_Human_Agent: user_message,
