@@ -115,7 +115,6 @@ def on_input_change():
         answer = conversation.predict(input=user_message)
     st.session_state.generated.append(answer)
     st.session_state.past.append(user_message)
-
     st.session_state.user_message = ""
     Agent_1_Human = "Human" 
     Agent_2_AI = "AI" 
