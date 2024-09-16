@@ -1,6 +1,9 @@
-﻿私はMy name は１１23 desu,groupa
+﻿1111,groupa
 829527,groupa
-11111,groupb
+331030,groupa
+416185,groupb
 22222,groupb
-331030,groupc
-416185,groupc
+456456,groupb
+aito勇気だけ01,groupc
+おはようname,groupc
+11111,groupc
