@@ -19,7 +19,7 @@ if st.button("ログイン"):
         else:
             group = "groupa"  # デフォルトのグループを設定
         group_url_with_id = f"{special_url}?user_id={user_id}"
-        st.success(f"ログイン成功: {user_id}")
+        #st.success(f"ログイン成功: {user_id}")
         st.markdown(f'こちらのURLをクリックしてください: <a href="{group_url_with_id}" target="_blank">リンク</a>', unsafe_allow_html=True)
     else:
         st.error("クラウドワークスIDを入力してください。")
