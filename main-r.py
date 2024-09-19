@@ -58,7 +58,7 @@ template = """
     100字以内で話してください。
     日本語で話してください。
     私の入力に基づき、次の文脈（<ctx></ctx>で囲まれた部分）とチャット履歴（<hs></hs>で囲まれた部分）を使用して回答してください。:
-   ------
+    ------
     <ctx>
     {context}
     </ctx>
@@ -142,7 +142,7 @@ if user_id:
             })
         default_app = firebase_admin.initialize_app(cred)
     db = firestore.client()
-    db_path = f"./vector_participant/{user_id}"
+    db_path = f"./vector_lab_databases/{user_id}"
     if os.path.exists(db_path):
         embeddings = OpenAIEmbeddings(
             model="text-embedding-3-large",
