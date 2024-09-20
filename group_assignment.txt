@@ -13,7 +13,7 @@ test2,groupb
 512286,groupb
 554724,groupa
 597973,groupa
-704086,groupb
+704086,groupc
 829527,groupb
 845583,groupa
 944873,groupc
