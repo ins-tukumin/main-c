@@ -32,7 +32,7 @@ query_params = st.experimental_get_query_params()
 user_id = query_params.get('user_id', [None])[0]
 group = query_params.get('group', [None])[0]
 # is_second = 'second' in query_params
-user_id =int(user_id)
+# user_id =int(user_id)
 
 if "initialized" not in st.session_state:
     st.session_state['initialized'] = False
