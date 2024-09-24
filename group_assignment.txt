@@ -4,7 +4,7 @@ test2,groupb
 22222,groupb
 11111あいｄｐ1１１a,groupc
 048499,groupa
-053065,groupb
+053２06あ5,groupb
 128026,groupc
 162070,groupa
 331030,groupb
