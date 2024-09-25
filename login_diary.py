@@ -10,7 +10,7 @@ st.title("ログインページ")
 st.subheader("前半フェーズ１日目")
 
 # ユーザー入力を受け取る
-user_id = st.text_input("クラウドワークスID入力してください")
+user_id = st.text_input("クラウドワークスIDを入力してください")
 if st.button("ログイン"):
     if user_id:
         if user_id == "xxxx":
