@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 # CSVファイルの読み込み
-file_path = 'main_chat_test.csv'
+file_path = 'testfiles/main_chat_test.csv'
 df = pd.read_csv(file_path)
 
 # 抜き出したい列名をリストで指定 'Q1' or 'Q34'
@@ -23,7 +23,8 @@ df_selected.loc[:, 'Q34'] = df_selected['Q34'].str.replace('\n', ' ').str.replac
 df_selected = df_selected.dropna(subset=['user_id'])
 
 # user_idに数値や文字列が混在することを想定し、すべて文字列に変換
-df_selected['user_id'] = df_selected['user_id'].astype(str)
+df_selected['user_id'] = df_selected['user_id'].fillna('').astype(str)
+#df_selected['user_id'] = df_selected['user_id'].astype(str)
 
 # ユニークなuser_idを取得
 unique_user_ids = df_selected['user_id'].unique()
@@ -62,7 +63,7 @@ df_selected = pd.merge(df_selected, user_group_mapping_df, on='user_id', how='le
 input_file_name = os.path.splitext(os.path.basename(file_path))[0]
 
 # 出力ファイル名を作成
-output_file_path = f"{input_file_name}_selected_file.csv"
+output_file_path = f"testfiles/{input_file_name}_selected_file.csv"
 
 # 処理後のデータを新しいCSVファイルとして保存
 df_selected.to_csv(output_file_path, index=False, encoding='utf-8-sig')
