@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 # CSVファイルの読み込み
-file_path = 'mainfiles/0928test.csv'
+file_path = 'mainfiles/0928test2.csv'
 df = pd.read_csv(file_path)
 
 # 抜き出したい列名をリストで指定 'Q1' or 'Q34'
