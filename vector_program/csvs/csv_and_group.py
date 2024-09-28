@@ -3,12 +3,18 @@ import pandas as pd
 import numpy as np
 
 # CSVファイルの読み込み
-file_path = 'testfiles/main_chat_test.csv'
+file_path = 'mainfiles/0928test.csv'
 df = pd.read_csv(file_path)
 
 # 抜き出したい列名をリストで指定 'Q1' or 'Q34'
-desired_columns = ['StartDate', 'Q34', 'user_id']
+desired_columns = ['StartDate', 'Q1', 'user_id']
 #desired_columns = ['StartDate', 'Q1', 'user_id', 'group']
+
+# StartDate列をdatetime型に変換
+df['StartDate'] = pd.to_datetime(df['StartDate'])
+
+# 2024-09-28 12:05:00以降のデータをフィルタリング
+df = df[df['StartDate'] >= pd.Timestamp("2024-09-28 12:05:00")]
 
 # 指定した列だけを抜き出す（コピーではなく.locを使って操作）
 df_selected = df.loc[:, desired_columns]
@@ -17,7 +23,7 @@ df_selected = df.loc[:, desired_columns]
 df_selected.loc[:, 'StartDate_month_day'] = pd.to_datetime(df_selected['StartDate']).dt.strftime('%m月%d日')
 
 # 改行を削除（.locを使用して値を変更）
-df_selected.loc[:, 'Q34'] = df_selected['Q34'].str.replace('\n', ' ').str.replace('\r', ' ')
+df_selected.loc[:, 'Q1'] = df_selected['Q1'].str.replace('\n', ' ').str.replace('\r', ' ')
 
 # 欠損データを含む行を削除
 df_selected = df_selected.dropna(subset=['user_id'])
@@ -63,7 +69,7 @@ df_selected = pd.merge(df_selected, user_group_mapping_df, on='user_id', how='le
 input_file_name = os.path.splitext(os.path.basename(file_path))[0]
 
 # 出力ファイル名を作成
-output_file_path = f"testfiles/{input_file_name}_selected_file.csv"
+output_file_path = f"mainfiles/{input_file_name}_selected_file.csv"
 
 # 処理後のデータを新しいCSVファイルとして保存
 df_selected.to_csv(output_file_path, index=False, encoding='utf-8-sig')
