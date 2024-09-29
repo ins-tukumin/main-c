@@ -1,7 +1,7 @@
 import pandas as pd
 
 # CSVファイルを読み込む
-df = pd.read_csv('mainfiles/0928test.csv')
+df = pd.read_csv('mainfiles/0928test2.csv')
 
 # StartDate列をdatetime型に変換
 df['StartDate'] = pd.to_datetime(df['StartDate'])

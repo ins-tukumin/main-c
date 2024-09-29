@@ -7,7 +7,7 @@ special_url = "https://nagoyapsychology.qualtrics.com/jfe/form/SV_55DnU55WeDglj4
 
 # Streamlitアプリケーションのレイアウト
 st.title("ログインページ")
-st.subheader("前半フェーズ１日目")
+st.subheader("前半フェーズ2日目")
 
 # ユーザー入力を受け取る
 user_id = st.text_input("クラウドワークスIDを入力してください")
