@@ -95,7 +95,7 @@ Togotogo,groupa
 2933157,groupb
 3266322,groupb
 5780152,groupb
-tamachi3,groupb
+tamachi3,groupa
 2848289,groupb
 1147884,groupb
 5231896,groupb
