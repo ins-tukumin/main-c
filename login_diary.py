@@ -14,8 +14,8 @@ user_id = st.text_input("クラウドワークスIDを入力してください")
 if st.button("ログイン"):
     if user_id:
         if user_id == "xxxx":
-            random_number = random.randint(1000000000, 9999999999)
-            user_id = f"xxxx{random_number}"
+            random_number1 = random.randint(1000000000, 9999999999)
+            user_id = f"xxxx{random_number1}"
             group = "groupx"
         else:
             group = "groupa"  # デフォルトのグループを設定
