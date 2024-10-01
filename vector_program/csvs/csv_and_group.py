@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 # CSVファイルの読み込み
-file_path = 'mainfiles/0930.csv'
+file_path = 'mainfiles/1001.csv'
 df = pd.read_csv(file_path)
 
 # 抜き出したい列名をリストで指定 'Q1' or 'Q34'
@@ -14,7 +14,7 @@ desired_columns = ['StartDate', 'Q1', 'user_id']
 df['StartDate'] = pd.to_datetime(df['StartDate'])
 
 # 2024-09-28 12:05:00以降のデータをフィルタリング
-df = df[df['StartDate'] >= pd.Timestamp("2024-09-30 12:05:00")]
+df = df[df['StartDate'] >= pd.Timestamp("2024-09-28 12:05:00")]
 
 # 指定した列だけを抜き出す（コピーではなく.locを使って操作）
 df_selected = df.loc[:, desired_columns]
