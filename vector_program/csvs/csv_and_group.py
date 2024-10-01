@@ -10,6 +10,9 @@ df = pd.read_csv(file_path)
 desired_columns = ['StartDate', 'Q1', 'user_id']
 #desired_columns = ['StartDate', 'Q1', 'user_id', 'group']
 
+# user_id を文字列型に変換（数値と文字列が混在することを想定）
+df['user_id'] = df['user_id'].astype(str)
+
 # StartDate列をdatetime型に変換
 df['StartDate'] = pd.to_datetime(df['StartDate'])
 
