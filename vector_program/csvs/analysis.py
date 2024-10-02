@@ -7,7 +7,7 @@ file_path = 'mainfiles/1002.csv'
 df = pd.read_csv(file_path)
 
 # 抜き出したい列名をリストで指定 'Q1' or 'Q34'
-desired_columns = ['StartDate', 'user_id','Q2_1','Q2_2','Q2_3','Q2_4','Q2_5','Q2_6','Q2_7','Q2_8','Q2_9','Q2_10','Q2_11','Q2_12','Q2_13','Q2_14','Q2_15','Q2_16','Q6','Q8','Q10','Q12','Q14','Q16','Q20','Q22','Q24','Q28','Q30']
+desired_columns = ['StartDate', 'user_id','Q2_1','Q2_2','Q2_3','Q2_4','Q2_5','Q2_6','Q2_7','Q2_8','Q2_9','Q2_10','Q2_11','Q2_12','Q2_13','Q2_14','Q2_15','Q2_16','Q6','Q8','Q10','Q12','Q14','Q16','Q20','Q22','Q24','Q28','Q30','group']
 #desired_columns = ['StartDate', 'Q1', 'user_id', 'group']
 
 # user_id を文字列型に変換（数値と文字列が混在することを想定）
@@ -41,7 +41,13 @@ df_selected['competence'] = df[['Q6','Q8','Q10']].mean(axis=1).round(3)
 df_selected['warmth'] = df[['Q12','Q14','Q16']].mean(axis=1).round(3)
 
 # 列名を変更 ('旧列名'を'新列名'に変更)
-df.rename(columns={'旧列名': '新列名'}, inplace=True)
+df_selected.rename(columns={'Q20': 'satisfaction'}, inplace=True)
+df_selected.rename(columns={'Q22': 'effectiveness'}, inplace=True)
+df_selected.rename(columns={'Q24': 'efficiency'}, inplace=True)
+df_selected.rename(columns={'Q28': 'willingness'}, inplace=True)
+df_selected.rename(columns={'Q30': 'understanding'}, inplace=True)
 
-# 列名を変更 ('旧列名'を'新列名'に変更)
-df.rename(columns={'旧列名': '新列名'}, inplace=True)
+output_csv = 'mainfiles/analysis/1002_selected_renamed.csv'  # 出力ファイルのパスを指定してください
+
+# 新しいCSVファイルとして保存
+df_selected.to_csv(output_csv, index=False)

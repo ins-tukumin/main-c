@@ -3,11 +3,11 @@ import pandas as pd
 import numpy as np
 
 # CSVファイルの読み込み
-file_path = 'mainfiles/1001.csv'
+file_path = 'mainfiles/1002.csv'
 df = pd.read_csv(file_path)
 
 # 抜き出したい列名をリストで指定 'Q1' or 'Q34'
-desired_columns = ['StartDate', 'Q1', 'user_id']
+desired_columns = ['StartDate', 'Q34', 'user_id']
 #desired_columns = ['StartDate', 'Q1', 'user_id', 'group']
 
 # user_id を文字列型に変換（数値と文字列が混在することを想定）
@@ -26,7 +26,7 @@ df_selected = df.loc[:, desired_columns]
 df_selected.loc[:, 'StartDate_month_day'] = pd.to_datetime(df_selected['StartDate']).dt.strftime('%m月%d日')
 
 # 改行を削除（.locを使用して値を変更）
-df_selected.loc[:, 'Q1'] = df_selected['Q1'].str.replace('\n', ' ').str.replace('\r', ' ')
+df_selected.loc[:, 'Q34'] = df_selected['Q34'].str.replace('\n', ' ').str.replace('\r', ' ')
 
 # 欠損データを含む行を削除
 df_selected = df_selected.dropna(subset=['user_id'])
