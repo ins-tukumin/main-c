@@ -28,7 +28,7 @@ def load_participants(file_path):
 
 # Streamlitアプリケーションのレイアウト
 st.title("ログインページ")
-st.subheader("後半フェーズ１日目")
+st.subheader("後半フェーズ２日目")
 
 # 参加者のリストを読み込む
 participants = load_participants('group_assignment.txt')
