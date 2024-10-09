@@ -76,7 +76,11 @@ df_selected = pd.merge(df_selected, user_group_mapping_df, on='user_id', how='le
 input_file_name = os.path.splitext(os.path.basename(file_path))[0]
 
 # 出力ファイル名を作成
+<<<<<<< HEAD
 output_file_path = f"mainfiles/{input_file_name}_selected_only_file.csv"
+=======
+output_file_path = f"{input_file_name}_selected_file.csv"
+>>>>>>> 1bba071497884a5855ce67e02842e4c5ad10c867
 
 # 処理後のデータを新しいCSVファイルとして保存
 df_selected.to_csv(output_file_path, index=False, encoding='utf-8-sig')
