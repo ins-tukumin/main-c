@@ -1,7 +1,7 @@
 import pandas as pd
 
 # CSVファイルを読み込みます（ファイル名を適宜変更してください）
-input_file = "mainfiles/mainfiles/dialy_file.csv"
+input_file = "/mainfiles/dialy_file.csv"
 df = pd.read_csv(input_file)
 
 # user_id が7回登場しないデータを確認し、除外する

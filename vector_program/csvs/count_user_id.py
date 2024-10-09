@@ -1,7 +1,7 @@
 import pandas as pd
 
 # CSVファイルを読み込む
-df = pd.read_csv('mainfiles/1004_selected_file.csv')
+df = pd.read_csv('mainfiles/1001_selected_file.csv')
 
 # StartDate列をdatetime型に変換
 df['StartDate'] = pd.to_datetime(df['StartDate'])
@@ -10,7 +10,7 @@ df['StartDate'] = pd.to_datetime(df['StartDate'])
 df['StartDate_month_day'] = df['StartDate'].dt.strftime('%m月%d日')
 
 # 2024-09-28 12:05:00以降のデータをフィルタリング
-df = df[df['StartDate'] >= pd.Timestamp("2024-10-02 12:05:00")]
+df = df[df['StartDate'] >= pd.Timestamp("2024-09-28 12:05:00")]
 
 # user_idごとにStartDate_month_day列の値を羅列
 user_id_dates = df.groupby('user_id')['StartDate_month_day'].apply(lambda x: ' '.join(x))
