@@ -32,6 +32,10 @@ else:
     print("すべてのuser_idは7回登場しています。")
 
 # 結合した結果を新しいCSVとして保存
+<<<<<<< HEAD
 combined_df.to_csv("mainfiles/mainfiles/dialy_file.csv", index=False)
+=======
+combined_df.to_csv("mainfiles/1003_combined_file.csv", index=False)
+>>>>>>> dd9a135192962bb89c9e831a60b352bb2483a416
 
 print("2つのCSVが1つに結合されました！")
