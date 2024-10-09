@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 # CSVファイルの読み込み
-file_path = 'mainfiles/1002.csv'
+file_path = 'temp.csv'
 df = pd.read_csv(file_path)
 
 # 抜き出したい列名をリストで指定 'Q1' or 'Q34'
@@ -17,7 +17,7 @@ df['user_id'] = df['user_id'].astype(str)
 df['StartDate'] = pd.to_datetime(df['StartDate'])
 
 # 2024-09-28 12:05:00以降のデータをフィルタリング
-df = df[df['StartDate'] >= pd.Timestamp("2024-09-28 12:05:00")]
+df = df[df['StartDate'] >= pd.Timestamp("2024-10-03 12:05:00")]
 
 # 指定した列だけを抜き出す（コピーではなく.locを使って操作）
 df_selected = df.loc[:, desired_columns]
@@ -72,7 +72,7 @@ df_selected = pd.merge(df_selected, user_group_mapping_df, on='user_id', how='le
 input_file_name = os.path.splitext(os.path.basename(file_path))[0]
 
 # 出力ファイル名を作成
-output_file_path = f"mainfiles/{input_file_name}_selected_file.csv"
+output_file_path = f"{input_file_name}_selected_file.csv"
 
 # 処理後のデータを新しいCSVファイルとして保存
 df_selected.to_csv(output_file_path, index=False, encoding='utf-8-sig')
