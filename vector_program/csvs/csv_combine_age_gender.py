@@ -15,4 +15,4 @@ print("結合後のデータフレーム：")
 print(df1)
 
 # 必要なら結合結果をCSVとして保存
-df1.to_csv('mainfiles/analysis/merged_output.csv', index=False)
+df1.to_csv('mainfiles/analysis/1002_age_gender.csv', index=False)
