@@ -50,7 +50,7 @@ for user_id, group in df.groupby('user_id'):
 output_df = pd.DataFrame(output_data, columns=['user_id', 'before', 'after', 'day1', 'day2', 'day3'])
 
 # CSVに保存
-output_file = "mainfiles/mainfiles/dialy_count.csv"
+output_file = "mainfiles/mainfiles/dialy_count_temp.csv"
 output_df.to_csv(output_file, index=False)
 
 print(f"処理が完了しました。結果は {output_file} に保存されました。")
