@@ -1,25 +1,24 @@
 import pandas as pd
 
-# CSVファイルを読み込み（例: 'input.csv'）
-df = pd.read_csv('mainfiles/analysis/1002_selected_renamed.csv')
+# CSVファイルを読み込む
+data1 = pd.read_csv("mainfiles/analysis/dialy_file.csv")  # 最初のCSVファイル
+data2 = pd.read_csv("mainfiles/0928.csv")  # 2つ目のCSVファイル
 
-# 抽出したい列のリストを指定（例: 'user_id', 'Q2', 'Q3' 列を抽出）
-selected_columns = ['understanding']
-# PANAS_P,PANAS_N,competence,warmth,satisfaction,effectiveness,efficiency,willingness,understanding
+# user_id 列の値を取得
+user_ids_1 = set(data1['user_id'])  # file1のuser_id
+user_ids_2 = set(data2['user_id'])  # file2のuser_id
 
-# 条件を設定：group 列が "A" の行のみを対象
-df_filtered_a = df[df['group'] == 'groupa']
-df_filtered_b = df[df['group'] == 'groupb']
-df_filtered_c = df[df['group'] == 'groupc']
+# どちらか一方にのみ存在する user_id を取得
+only_in_file1 = user_ids_1 - user_ids_2  # file1 にのみ存在する user_id
+only_in_file2 = user_ids_2 - user_ids_1  # file2 にのみ存在する user_id
 
-# 条件に合致した行から指定した列のみを抽出
-df_selected_a = df_filtered_a[selected_columns]
-df_selected_b = df_filtered_b[selected_columns]
-df_selected_c = df_filtered_c[selected_columns]
+# どちらか一方にのみ存在する user_id を表示
+print("User IDs only in file1:")
+print(only_in_file1)
 
-# 新しいCSVファイルとして保存
-df_selected_a.to_csv('mainfiles/analysis/filtered_output_a.csv', index=False)
-df_selected_b.to_csv('mainfiles/analysis/filtered_output_b.csv', index=False)
-df_selected_c.to_csv('mainfiles/analysis/filtered_output_c.csv', index=False)
+print("\nUser IDs only in file2:")
+print(only_in_file2)
 
-print("指定した条件と列を含む 'filtered_output.csv' を作成しました。")
+# 両方に存在する user_id を取得し、その数をカウント
+common_user_ids = user_ids_1 & user_ids_2
+print(f"\nNumber of common user IDs in both files: {len(common_user_ids)}")
