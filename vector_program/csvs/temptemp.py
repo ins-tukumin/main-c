@@ -10,17 +10,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 # Firebase初期化 (JSON形式の認証情報を使用)
 cred_dict = {
-    "type":"service_account",
-    "project_id":"main-r",
-    "private_key_id":"ffc5a139288747153f225cc9cf2381c334cda3c3",
-    "private_key":"-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCeOorVdNEX2Ryu\n/p3mhtjSZPavbJYhJNCnL60LZ6dukR4ghbzUZV6KuobKwL1wwKO8EJnUM5U1x15A\n3dvnm2uJOnijCmkmpkmPNalBWPV8i31nVxecPWk6hzByJ/oxLInzjBHy/GuZTILr\nVlzccMSoGCGwmpLbxeK1cLj+L65Obi3XmEeCdrV3o7BEowjB8q9mwfe7mq6Asyp3\ndakZXH7MXZCX3PpXh2MFM7SCE1zhgiuE8lQyJ2XfvoFx07zSiy+E16hHvTS77+H5\nxHmirHD5jcUd1tsAxe+rGqKlpEWj/xGR/gRPTsBuXXfrixUS1tS+nFabFhkF5jKG\nt8HMSfCBAgMBAAECggEAB4T7tRI0n6ADQ3O5OEvfQPxoVsTfy5puygsze4/E/rWp\ny1zfsO5SVGBx6G/JcPLOtTDKxrFe3WvomEeS3EpgDWj4c7MadSpA46vmq8LZA76z\nSnZymku21P+4tywcMTsPIUJeVgBV8raWoC1+A0Herqha7YQjB4u7buj4+ad1bqet\nlxoLynQo14nCQYBeyOYCYRgoyDaVFYpqxY9LbUveOIxoH5Aw4uo/2hOJAIOwWyMY\n0pk2jN44Br1IpOVJi+aTMdOPjV8r/9MHCXux5zbQoPbzN3BN8AyaeTVKpSLvu8+T\nkPT57d13/g4W5c8LSGXCbvqLA1cT+5btX1/lG2yxMwKBgQDapVa4LZknFdMl93EC\n77l0Oz0IZCXXhUeG63pX8b3Pgr2U/Bhl8lXhI3k5OHFv/KvMNLaZf2d4wCpg9Ucm\ncrc1te3b0FAVmHuTTbPdVGPSz5Q2eI+P0SIqlfgaaS42npkz9OA152mTZQDwkGxk\nZcSCyqitvfyqBWj7HHnBvutqGwKBgQC5Qs6zFjxtZ7l1xa9EJRgf1MyUPNYDJwaD\nCkVLb0VLgh/TK6BgWzyKcclaSCMl/lJzZPGeAU6gpKt67b0ri4FcXpy/7+hNnukp\nG4uA0ZL6KNvUEcaVqvjCQySZYUdCNX+P5P5VobABt5xRHWU0+cHSpw8nqS9aeu1/\n4yF6yTQ5kwKBgEHbY09+jI71R/A7o9KammWkIjIQ2EUeY/kDnIo4yk9ite/WLxMl\n9zAlGzJdCe4NUUHk7ss1UNlSKHGj75ZpHz4SWl7HVBftIeuwj+iurpKk66OslLFg\n8MWa/mwWGlFhXAwGSjJyTZ6T4cCT/9INxS8QE9ahTyV3E7PvU81D0GzZAoGAf59J\nO0+3IvsQZNRg78XJ/6udnwTlvVg2ATGjGNs3VlP2zodAPQC9DPZj6kDFjdfMPtgs\nJlfqLXoi81UxOv0oiVRYEVUYp9gv8PSbvoshABoDje0M62/TXCfa35qG91JZZOww\nVRdEY3p0QeDJJpxjbFVPeFfxWhhS4gW6u5Y91ucCgYA+bT25d+AObddpp7rdWiIc\nl0MHk1RP/5rjCe9M9DAN/VKEqWI21vmRPW/UflrDL68pVl1/PEOHitWra6/RD4h4\njhEMOI/8iZl1QFLWzdkXyYwKDGjnb7eCay95W3irX7N6fXR57VpaELwFPcVmB3rP\nfd+xPDRntusV1G+P49HCHg==\n-----END PRIVATE KEY-----\n",
-    "client_email":"firebase-adminsdk-m1jdu@main-r.iam.gserviceaccount.com",
-    "client_id":"114270809957158975243",
-    "auth_uri":"https://accounts.google.com/o/oauth2/auth",
-    "token_uri":"https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-m1jdu%40main-r.iam.gserviceaccount.com",
-    "universe_domain":"googleapis.com"
+    a
 }
 cred = credentials.Certificate(cred_dict)
 firebase_admin.initialize_app(cred)
