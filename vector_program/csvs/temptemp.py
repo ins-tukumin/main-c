@@ -10,7 +10,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 # Firebase初期化 (JSON形式の認証情報を使用)
 cred_dict = {
-    a
+    
 }
 cred = credentials.Certificate(cred_dict)
 firebase_admin.initialize_app(cred)
