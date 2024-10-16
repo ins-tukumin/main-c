@@ -149,7 +149,7 @@ if user_id:
         default_app = firebase_admin.initialize_app(cred)
     db = firestore.client()
     
-    db_path = f"./vector/{user_id}"
+    db_path = f"./vector_lab_databases/{user_id}"
     if os.path.exists(db_path):
         embeddings = OpenAIEmbeddings(
             model="text-embedding-3-large",
