@@ -1,14 +1,43 @@
 import pandas as pd
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
+import numpy as np
 
-# 2つのCSVファイルを読み込む
-df1 = pd.read_csv('mainfiles/analysis/transformed_data.csv')
-df2 = pd.read_csv('mainfiles/analysis/cos_for_analysis.csv')
+# CSVファイルを読み込む
+df = pd.read_csv('BIGDATA.csv')
 
-# 'user_id'列でマージ（inner join: 共通するuser_idのみ結合）
-merged_df = pd.merge(df1, df2, on='user_id', how='inner')
+# 説明変数と従属変数の指定
+explanatory_variable = df['ave_cos_diary_Human']  # 説明変数（例: 'age'など）
+dependent_variables = ['ave_understanding','ave_competence','ave_warmth','ave_willingness']  # 複数の従属変数
 
-# 結果を確認
-print(merged_df.head())
+# 説明変数に定数項を追加（回帰分析のため）
+X = sm.add_constant(explanatory_variable)
 
-# 新しいCSVファイルとして保存
-merged_df.to_csv('merged_data.csv', index=False)
+# 各従属変数に対して回帰分析とプロットを行う
+for dependent_var in dependent_variables:
+    # 従属変数の選択
+    y = df[dependent_var]
+    
+    # 回帰分析の実行
+    model = sm.OLS(y, X).fit()
+    print(f'Regression results for {dependent_var}:')
+    print(model.summary())  # 回帰結果の表示
+    
+    # 回帰直線を引くための予測値
+    predictions = model.predict(X)
+    
+    # プロットの作成
+    plt.figure(figsize=(8, 6))
+    plt.scatter(explanatory_variable, y, label='Data Points')
+    plt.plot(explanatory_variable, predictions, color='red', label='Regression Line')
+    plt.title(f'Regression: {dependent_var} ~ Human-Diary')
+    #plt.xlabel('Human-Diary')
+    # plt.ylabel(dependent_var)
+
+     # 軸のスケールを指定 (例: 0から1までの範囲)
+    plt.xlim(0, 0.4)  # X軸の範囲
+    plt.ylim(1, 5)  # Y軸の範囲
+    
+    plt.legend()
+    plt.grid(True)
+    plt.show()
