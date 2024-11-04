@@ -69,7 +69,7 @@ with open('BERT_cos_b.csv', mode='w', newline='') as file:
         'userid', 'day1_cos_AI_Human', 'day1_cos_diary_AI', 'day1_cos_diary_Human',
         'day2_cos_AI_Human', 'day2_cos_diary_AI', 'day2_cos_diary_Human',
         'day3_cos_AI_Human', 'day3_cos_diary_AI', 'day3_cos_diary_Human',
-         'ave_cos_AI_Human', 'ave_cos_diary_AI', 'ave_cos_diary_Human'
+        'ave_cos_AI_Human', 'ave_cos_diary_AI', 'ave_cos_diary_Human'
     ])
 
     # Firestoreに存在するuser_idごとに処理

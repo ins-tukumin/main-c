@@ -1,4 +1,4 @@
-userid,day1_cos_AI_Human,day1_cos_diary_AI,day1_cos_diary_Human,day2_cos_AI_Human,day2_cos_diary_AI,day2_cos_diary_Human,day3_cos_AI_Human,day3_cos_diary_AI,day3_cos_diary_Human,ave_cos_AI_Human,ave_cos_diary_AI,ave_cos_diary_Human,group
+user_id,day1_cos_AI_Human,day1_cos_diary_AI,day1_cos_diary_Human,day2_cos_AI_Human,day2_cos_diary_AI,day2_cos_diary_Human,day3_cos_AI_Human,day3_cos_diary_AI,day3_cos_diary_Human,ave_BERT_cos_AI_Human,ave_BERT_cos_diary_AI,ave_cos_BERT_diary_Human,group
 878721,0.788,0.646,0.869,0.6,0.353,0.341,0.597,0.383,0.301,0.768,0.431,0.427,c
 94338,0.734,0.803,0.693,0.236,0.462,0.301,0.52,0.525,0.466,0.743,0.333,0.503,c
 95866,0.645,0.75,0.804,0.355,0.36,0.389,0.502,0.552,0.494,0.733,0.368,0.516,c
