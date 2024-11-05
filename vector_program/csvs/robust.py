@@ -3,6 +3,7 @@ import statsmodels.api as sm
 import statsmodels.formula.api as smf
 import statsmodels.robust.norms as norms  # ノルム関数をここからインポート
 import matplotlib.pyplot as plt
+import numpy as np
 
 # CSVファイルを読み込む
 df = pd.read_csv('BIGBERT.csv')
@@ -37,17 +38,24 @@ for group in groups:
         predictions = model.predict(X)
 
         # プロットの作成
+        plt.grid(False)
         plt.figure(figsize=(8, 6))
-        plt.scatter(group_data[explanatory_variable], y, label='Data Points')
-        plt.plot(group_data[explanatory_variable], predictions, color='red', label='Robust Regression Line')
+        # plt.scatter(group_data[explanatory_variable], y, label='Data Points')
+        # plt.plot(group_data[explanatory_variable], predictions, color='red', label='Robust Regression Line')
+        plt.scatter(group_data[explanatory_variable], y)
+        plt.plot(group_data[explanatory_variable], predictions, color='red')
 
         # タイトルとラベルの設定
         plt.title(f'Robust Regression: {dependent_var} ~ {explanatory_variable} (Group: {group})')
 
         # 軸のスケールを指定
-        plt.xlim(0.4, 1.0)  # X軸の範囲
-        plt.ylim(1, 5)  # Y軸の範囲
+        plt.xlim(0.3, 0.8)  # X軸の範囲
+        plt.yticks(np.arange(1.0, 6.0, 1.0))
+        plt.ylim(0.9, 5.1)  # Y軸の範囲
 
         plt.legend()
         plt.grid(True)
-        plt.show()
+        # plt.show()
+
+        # SVGファイルとして保存
+        plt.savefig(f"SVGs/{dependent_var}_regression_plot.svg", format="svg")

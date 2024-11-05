@@ -3,14 +3,14 @@ import statsmodels.api as sm
 import matplotlib.pyplot as plt
 
 # CSVファイルを読み込む
-df = pd.read_csv('BIGBERT.csv')
+df = pd.read_csv('BIGDATA.csv')
 
 # 説明変数と従属変数の指定
-explanatory_variable = 'ave_cos_BERT_diary_Human'  # 説明変数
+explanatory_variable = 'ave_cos_diary_Human'  # 説明変数
 dependent_variables = [
-    'ave_PANAS_P', 'ave_PANAS_N'
-    # 'ave_competence',
-    # 'ave_warmth', 'ave_willingness','ave_understanding'
+    'ave_PANAS_P', 'ave_PANAS_N',
+    'ave_competence',
+    'ave_warmth', 'ave_willingness','ave_understanding'
 ]  # 複数の従属変数
 # 'ave_PANAS_P', 'ave_PANAS_N', 'ave_competence','ave_warmth', 'ave_satisfaction', 'ave_effectiveness','ave_efficiency', 'ave_willingness','ave_understanding'
 
@@ -55,4 +55,4 @@ for group in groups:
 
         plt.legend()
         plt.grid(True)
-        plt.show()
+        # plt.show()
