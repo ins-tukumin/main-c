@@ -1,9 +1,13 @@
 import pandas as pd
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
+import numpy as np
 
 # CSVファイルを読み込む
 df = pd.read_csv('BIGBERT.csv')
+
+# 結果を格納するリスト
+results_list = []
 
 # 説明変数と従属変数の指定
 explanatory_variable = 'ave_cos_BERT_diary_Human'  # 説明変数
@@ -31,6 +35,17 @@ for dependent_var in dependent_variables:
     # 回帰直線を引くための予測値
     predictions = model.predict(X)
 
+    # 残差の計算
+    residuals = model.resid
+    residuals_std = np.std(residuals)  # 残差の標準偏差の計算
+
+    # 残差の標準偏差をリストに追加
+    results_list.append({
+        'dependent_var': dependent_var,
+        'residuals_std': residuals_std
+    })
+
+
     # プロットの作成
     plt.figure(figsize=(8, 6))
     plt.scatter(df[explanatory_variable], y, label='Data Points')
@@ -48,3 +63,9 @@ for dependent_var in dependent_variables:
     plt.legend()
     plt.grid(True)
     # plt.show()
+
+# 結果をデータフレームに変換
+results_df = pd.DataFrame(results_list)
+
+# 残差の標準偏差をCSVファイルに保存
+results_df.to_csv('all_residuals_std_results.csv', index=False)
