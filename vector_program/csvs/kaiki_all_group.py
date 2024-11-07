@@ -6,6 +6,9 @@ import numpy as np
 # CSVファイルを読み込む
 df = pd.read_csv('BIGBERT.csv')
 
+# groupbを削除
+df = df[df['group'] != 'groupb']
+
 # 結果を格納するリスト
 results_list = []
 
@@ -48,21 +51,24 @@ for dependent_var in dependent_variables:
 
     # プロットの作成
     plt.figure(figsize=(8, 6))
-    plt.scatter(df[explanatory_variable], y, label='Data Points')
-    plt.plot(df[explanatory_variable], predictions, color='red', label='Regression Line')
+    plt.scatter(df[explanatory_variable], y)
+    plt.plot(df[explanatory_variable], predictions, color='red')
 
     # タイトルとラベルの設定
     plt.title(f'Regression: {dependent_var} ~ {explanatory_variable}')
     plt.xlabel('Human-Diary')
     plt.ylabel(dependent_var)
 
-    # 軸のスケールを指定 (例: 0から1までの範囲)
-    plt.xlim(0.4, 1.0)  # X軸の範囲
-    plt.ylim(1, 5)  # Y軸の範囲
-
+    # タイトルとラベルの設定
+    plt.title(f'Regression: {dependent_var} ~ {explanatory_variable}')
+    plt.xlim(0.3, 0.8)  # X軸の範囲
+    plt.yticks(np.arange(1.0, 6.0, 1.0))
+    plt.ylim(0.9, 5.1)  # Y軸の範囲
     plt.legend()
-    plt.grid(True)
+    plt.grid(False)
     # plt.show()
+    plt.savefig(f"SVGs/{dependent_var}_regression_plot.svg", format="svg")
+    plt.close()  # プロットを閉じてメモリを解放
 
 # 結果をデータフレームに変換
 results_df = pd.DataFrame(results_list)

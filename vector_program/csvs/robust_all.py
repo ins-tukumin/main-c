@@ -12,6 +12,9 @@ residuals_df = pd.read_csv('all_residuals_std_results.csv')
 # 元のデータセットのCSVファイルを読み込む
 df = pd.read_csv('BIGBERT.csv')
 
+# groupbを削除
+df = df[df['group'] != 'groupb']
+
 # 説明変数と従属変数の指定
 explanatory_variable = 'ave_cos_BERT_diary_Human'  # 説明変数
 dependent_variables = [
