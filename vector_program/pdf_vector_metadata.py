@@ -9,7 +9,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 pdf_directory = "./pdfs"
 
 # ベクトルデータベースを保存するディレクトリ
-db_directory = "../vector"
+db_directory = "../vector_metadata"
 
 # 日付を検出するための正規表現パターン
 date_pattern = re.compile(r"(\d{1,2})月(\d{1,2})日")
