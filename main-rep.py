@@ -25,7 +25,7 @@ import datetime
 import pytz
 import time
 
-#現在時刻
+#現在時刻now
 global now
 now = datetime.datetime.now(pytz.timezone('Asia/Tokyo'))
 
