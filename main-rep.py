@@ -218,14 +218,29 @@ if user_id:
                 key_generated = str(i) + "keyg"
                 message(st.session_state.generated[i], key=str(key_generated), avatar_style="micah")
                 
+        #with st.container():
+            #if st.session_state.count >= 5:
+                #group_url = "https://nagoyapsychology.qualtrics.com/jfe/form/SV_5cZeI9RbaCdozTU"
+                #group_url_with_id = f"{group_url}?user_id={user_id}&group={group}"
+                #st.markdown(f'これで今回の会話は終了です。こちらをクリックしてアンケートに回答してください。: <a href="{group_url_with_id}" target="_blank">リンク</a>', unsafe_allow_html=True)
+            #else:
+                #user_message = st.text_area("内容を入力して送信ボタンを押してください", key="user_message")
+                #st.button("送信", on_click=on_input_change)
+
+
         with st.container():
             if st.session_state.count >= 5:
                 group_url = "https://nagoyapsychology.qualtrics.com/jfe/form/SV_5cZeI9RbaCdozTU"
                 group_url_with_id = f"{group_url}?user_id={user_id}&group={group}"
                 st.markdown(f'これで今回の会話は終了です。こちらをクリックしてアンケートに回答してください。: <a href="{group_url_with_id}" target="_blank">リンク</a>', unsafe_allow_html=True)
             else:
-                user_message = st.text_area("内容を入力して送信ボタンを押してください", key="user_message")
-                st.button("送信", on_click=on_input_change)
+                with st.form(key="message_form", clear_on_submit=True):
+                    user_message = st.text_area("内容を入力して送信ボタンを押してください", key="user_message")
+                    #st.form_submit_button("送信", on_click=on_input_change) こっちでもいいよ！
+                    submit_button = st.form_submit_button("送信")
+
+        if submit_button:
+            on_input_change()  # ボタンが押された際の処理
     else:
         st.error(f"No vector database found for student ID {user_id}.")
 
