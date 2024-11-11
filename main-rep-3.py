@@ -119,14 +119,13 @@ if user_id:
 
         memory = st.session_state.memory
 
-        # プロンプトテンプレートを設定
+        # メインプロンプトテンプレートを設定
         custom_prompt = PromptTemplate(
             input_variables=["chat_history", "context", "context_date", "question"],
             template="""
                 今日の出来事を振り返って、ユーザーに自由に感想を語ってもらいましょう。適度な問いかけを行って、会話を促進してください。
                 私の日記情報（{context_date} に記入されたもの）も添付します。
                 この日記を読んで、私の事をよく理解した上で会話してください。
-                必要に応じて、私の日記に書かれている情報を参照して、私の事を理解して会話してください。
                 ------
                 <ctx>
                 {context}
@@ -175,23 +174,36 @@ if user_id:
             chat_history = memory.load_memory_variables({})["chat_history"]
 
             with st.spinner("相手からの返信を待っています。。。"):
-                # chain 呼び出し時にソースドキュメントを取得し応答生成
+                # chain 呼び出し時にソースドキュメントを取得し、メタデータと応答を取得
                 result = chain({
                     "question": user_message, 
                     "chat_history": chat_history
                 })
 
-
-                # ソースドキュメントを確認し、メタデータが正しく含まれているかチェック
+                # ソースドキュメントから context と context_date を取得
                 if 'source_documents' in result:
-                    for doc in result['source_documents']:
-                        # メタデータの存在確認と表示
-                        context = doc.metadata.get('context', 'メタデータがありません')
-                        context_date = doc.metadata.get('context_date', 'メタデータがありません')
-                        st.write(f"Document Metadata - context_date: {context_date}, context: {context}")   
-                # 応答生成
-                
-                response_text = result["answer"]
+                    source_docs = result['source_documents']
+                    if source_docs:
+                        # context はドキュメントの本文
+                        context = source_docs[0].page_content
+                        # context_date はメタデータから取得、なければデフォルト値を設定
+                        context_date = source_docs[0].metadata.get("date", "日付不明")
+                    else:
+                        context = ""
+                        context_date = "日付不明"
+                else:
+                    context = ""
+                    context_date = "日付不明"
+
+                # context と context_date を chain に渡して応答を生成
+                response = chain({
+                    "question": user_message,
+                    "chat_history": chat_history,
+                    "context": context,
+                    "context_date": context_date  # 必ず指定
+                })
+
+                response_text = response["answer"]
 
             # 会話履歴を更新
             st.session_state.past.append(user_message)
