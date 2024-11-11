@@ -13,7 +13,7 @@ from langchain.prompts import PromptTemplate
 import firebase_admin
 from firebase_admin import credentials, firestore
 from langchain.schema import BaseRetriever
-from pydantic import Field
+# from pydantic import Field
 import datetime
 import pytz
 import time
@@ -98,13 +98,10 @@ if user_id:
         chat = ChatOpenAI(model=select_model, temperature=select_temperature)
         retriever = database.as_retriever()
 
-        # CustomRetrieverをBaseRetrieverから継承し、retrieverフィールドを定義
         class CustomRetriever(BaseRetriever):
-            retriever: BaseRetriever = Field()
-
             def __init__(self, retriever: BaseRetriever, **kwargs):
                 super().__init__(**kwargs)
-                object.__setattr__(self, 'retriever', retriever)
+                self.retriever = retriever  # インスタンス変数として直接設定
 
             def get_relevant_documents(self, query):
                 docs = self.retriever.get_relevant_documents(query)
@@ -112,6 +109,9 @@ if user_id:
                     date_info = doc.metadata.get("date", "不明な日付")
                     doc.page_content = f"【日付: {date_info}】\n{doc.page_content}"
                 return docs
+
+            class Config:
+                arbitrary_types_allowed = True
 
         # カスタムリトリーバーを使ってリトリーバーをラップ
         custom_retriever = CustomRetriever(retriever)
