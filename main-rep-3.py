@@ -12,6 +12,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
 import firebase_admin
 from firebase_admin import credentials, firestore
+from langchain.schema import BaseRetriever
 import datetime
 import pytz
 import time
@@ -96,11 +97,12 @@ if user_id:
         chat = ChatOpenAI(model=select_model, temperature=select_temperature)
         retriever = database.as_retriever()
 
-        # メタデータを含むカスタムリトリーバーの設定
-        class CustomRetriever:
+        # CustomRetrieverをBaseRetrieverから継承して定義
+        class CustomRetriever(BaseRetriever):
             def __init__(self, retriever):
                 self.retriever = retriever
 
+            # `get_relevant_documents` メソッドを実装
             def get_relevant_documents(self, query):
                 docs = self.retriever.get_relevant_documents(query)
                 for doc in docs:
