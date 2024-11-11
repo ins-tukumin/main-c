@@ -175,9 +175,13 @@ if user_id:
 
             with st.spinner("相手からの返信を待っています。。。"):
                 # chain 呼び出し時にソースドキュメントを取得し、メタデータと応答を取得
+                context_temp = ""
+                context_date_temp = ""
                 result = chain({
                     "question": user_message, 
-                    "chat_history": chat_history
+                    "chat_history": chat_history,
+                    "context":context_temp,
+                    "context_date":context_date_temp
                 })
 
                 # ソースドキュメントから context と context_date を取得
