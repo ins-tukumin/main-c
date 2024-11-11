@@ -120,7 +120,7 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 if user_id:
     if not firebase_admin._apps:
-        # 環境変数を読み込む
+        # 環境変数を読み込むよ
         type = st.secrets["type"]
         project_id = st.secrets["project_id"]
         private_key_id = st.secrets["private_key_id"]

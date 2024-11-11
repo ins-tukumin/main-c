@@ -86,11 +86,6 @@ template = """
     日本語で話してください。
     私の入力に基づき、次の文脈（<ctx></ctx>で囲まれた部分）とチャット履歴（<hs></hs>で囲まれた部分）と付加されている日記である文脈情報が書かれた日（<dy></dy>で囲まれた部分）を使用して回答してください。:
     ------
-    <dy>
-    {entry_date}
-    </dy>
-    ------
-    ------
     <ctx>
     {context}
     </ctx>
@@ -103,9 +98,10 @@ template = """
     Answer:
 """
 
+
 # PromptTemplateの設定
 prompt = PromptTemplate(
-    input_variables=["chat_history", "context", "entry_date", "question"],
+    input_variables=["chat_history", "context", "question"], #"entry_date"
     template=template,
 )
 
@@ -160,7 +156,7 @@ if user_id:
                     entry_date = doc.metadata.get("date", "日付不明")
                     page_content = doc.page_content
                     context_data.append(f"日付: {entry_date}\n内容: {page_content}")
-                    
+
                 # Streamlit上でentry_dateを表示
                 st.write(f"Debug - Entry Date: {entry_date}")
 
@@ -168,8 +164,8 @@ if user_id:
                 full_prompt = template.format(
                     chat_history=memory.load_memory_variables().get("chat_history", ""),
                     context=full_context,
-                    question=user_message,
-                    entry_date=entry_date
+                    question=user_message
+                    # entry_date=entry_date
                 )
 
                 # 応答生成
