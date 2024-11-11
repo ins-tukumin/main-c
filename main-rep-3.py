@@ -157,7 +157,7 @@ if user_id:
                 for data in context_data:
                     full_prompt += prompt.format(
                         context=data["content"],
-                        entry_date=data["date"],
+                        entry_date=data.get("date", "日付不明"),
                         question=user_message,
                         chat_history=memory.load_memory_variables().get("chat_history", "")
                     )
