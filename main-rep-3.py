@@ -38,39 +38,6 @@ if "initialized" not in st.session_state:
     st.session_state.initge.append(initial_message)
     st.session_state['initialized'] = True
 
-# メタデータを含むプロンプトテンプレート
-template = """
-    今日の出来事を振り返って、ユーザーに自由に感想を語ってもらいましょう。適度な問いかけを行って、会話を促進してください。
-    私の日記情報（{context_date} に記入されたもの）も添付します。
-    この日記を読んで、私の事をよく理解した上で会話してください。
-    必要に応じて、私の日記に書かれている情報を参照して、私の事を理解して会話してください。
-    ただ、”あなたの日記を読んでみると”といったような、日記を読んだ動作を直接示すような言葉は出力に含めないでください。
-    さらに、この会話では私の日記に含まれる「エピソード記憶」を適切に会話に盛り込んで話してほしいです。エピソード記憶という言葉の意味は以下に示します。
-    # エピソード記憶とは、人間の記憶の中でも特に個人的な経験や出来事を覚える記憶の種類の一つです。エピソード記憶は、特定の時間と場所に関連する出来事を含む記憶であり、過去の個人的な経験を詳細に思い出すことができる記憶を指します。
-    また、今日は１１月１１日です。必要に応じて日記の記入日も考慮して自然な会話を心掛けてください。
-    敬語は使わないでください。私の友達になったつもりで砕けた口調で話してください。
-    100字以内で話してください。
-    日本語で話してください。
-    私の入力に基づき、次の文脈（<ctx></ctx>で囲まれた部分）とチャット履歴（<hs></hs>で囲まれた部分）を使用して回答してください。:
-    ------
-    <ctx>
-    {context}
-    </ctx>
-    ------
-    <hs>
-    {chat_history}
-    </hs>
-    ------
-    {question}
-    Answer:
-    """
-
-# プロンプトテンプレートの設定
-prompt = PromptTemplate(
-    input_variables=["chat_history", "context", "context_date", "question"],
-    template=template,
-)
-
 select_model = "gpt-4o"
 select_temperature = 0.5
 
@@ -152,13 +119,52 @@ if user_id:
 
         memory = st.session_state.memory
 
+        # プロンプトテンプレートを設定
+        custom_prompt = PromptTemplate(
+            input_variables=["chat_history", "context", "context_date", "question"],
+            template="""
+                今日の出来事を振り返って、ユーザーに自由に感想を語ってもらいましょう。適度な問いかけを行って、会話を促進してください。
+                私の日記情報も添付します。
+                この日記を読んで、私の事をよく理解した上で会話してください。
+                必要に応じて、私の日記に書かれている情報を参照して、私の事を理解して会話してください。
+                ただ、”あなたの日記を読んでみると”といったような、日記を読んだ動作を直接示すような言葉は出力に含めないでください。
+                さらに、この会話では私の日記に含まれる「エピソード記憶」を適切に会話に盛り込んで話してほしいです。エピソード記憶という言葉の意味は以下に示します。
+                # エピソード記憶とは、人間の記憶の中でも特に個人的な経験や出来事を覚える記憶の種類の一つです。エピソード記憶は、特定の時間と場所に関連する出来事を含む記憶であり、過去の個人的な経験を詳細に思い出すことができる記憶を指します。
+                また、今日は１１月１１日です。必要に応じて日記の記入日も考慮して自然な会話を心掛けてください。
+                敬語は使わないでください。私の友達になったつもりで砕けた口調で話してください。
+                100字以内で話してください。
+                日本語で話してください。
+                私の入力に基づき、次の文脈（<ctx></ctx>で囲まれた部分）とチャット履歴（<hs></hs>で囲まれた部分）を使用して回答してください。:
+                ------
+                <ctx>
+                {context}
+                </ctx>
+                ------
+                <hs>
+                {chat_history}
+                </hs>
+                ------
+                {question}
+                Answer:
+            """
+        )
+
+        # 各ドキュメントに個別にメタデータ（context_date）を含むためのテンプレートを設定
+        document_combine_prompt = PromptTemplate(
+            input_variables=["context", "context_date"],
+            template="日記情報（{context_date} に記入）: {context}"
+        )
+
         # ConversationalRetrievalChain の設定
         chain = ConversationalRetrievalChain.from_llm(
             llm=chat,
             retriever=retriever,
             memory=memory,
-            combine_docs_chain_kwargs={'prompt': prompt},
-            return_source_documents=True  # ソースドキュメントを返す
+            return_source_documents=True,
+            combine_docs_chain_kwargs={
+                "prompt": custom_prompt,
+                "document_prompt": document_combine_prompt
+            }
         )
 
         #--------------------------------------------
@@ -177,37 +183,14 @@ if user_id:
             chat_history = memory.load_memory_variables({})["chat_history"]
 
             with st.spinner("相手からの返信を待っています。。。"):
-                # chain 呼び出し時にソースドキュメントを取得
+                # chain 呼び出し時にソースドキュメントを取得し応答生成
                 result = chain({
                     "question": user_message, 
                     "chat_history": chat_history
                 })
 
-                # ソースドキュメントからメタデータ（例：日付）を取得
-                if 'source_documents' in result:
-                    source_docs = result['source_documents']
-                    if source_docs:
-                        # 最初のドキュメントのメタデータから日付を取得
-                        context = source_docs[0].page_content
-                        context_date = source_docs[0].metadata.get("date", "日付不明")
-                    else:
-                        context = ""
-                        context_date = "日付不明"
-                else:
-                    context = ""
-                    context_date = "日付不明"
-
-                # プロンプトに `context` と `context_date` を含めて再度 `chain` を呼び出す
-                response = chain(
-                    {
-                        "question": user_message,
-                        "context": context,
-                        "context_date": context_date,
-                        "chat_history": chat_history
-                    }
-                )
-
-                response_text = response["answer"]
+                # 応答生成
+                response_text = result["answer"]
 
             # 会話履歴を更新
             st.session_state.past.append(user_message)
