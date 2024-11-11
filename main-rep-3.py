@@ -1,7 +1,7 @@
-import os
+import pysqlite3
 import sys
-import datetime
-import pytz
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+import os
 import streamlit as st
 from streamlit_chat import message
 from langchain.chat_models import ChatOpenAI
@@ -11,98 +11,168 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
 
-# SQLite3 モジュール設定
-import pysqlite3
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+from langchain.prompts.chat import (
+    ChatPromptTemplate,
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+    MessagesPlaceholder,
+)
 
-# Firebase 設定
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import credentials
+from firebase_admin import firestore
+import datetime
+import pytz
+import time
 
-# 現在時刻
+# 現在時刻 now
 global now
 now = datetime.datetime.now(pytz.timezone('Asia/Tokyo'))
 
-# Streamlit の状態を初期化
 if "generated" not in st.session_state:
     st.session_state.generated = []
+    st.session_state.initge = []
 if "past" not in st.session_state:
     st.session_state.past = []
-if "initialized" not in st.session_state:
-    st.session_state['initialized'] = False
-    initial_message = "今日の振り返りをしよう！今日はどんな一日だった？"
-    st.session_state.generated.append(initial_message)
-    st.session_state['initialized'] = True
-
-# UIのスタイリングを隠す
-hide_streamlit_style = """
-                <style>
-                div[data-testid="stToolbar"] {visibility: hidden; height: 0%; position: fixed;}
-                div[data-testid="stDecoration"] {visibility: hidden; height: 0%; position: fixed;}
-                div[data-testid="stStatusWidget"] {visibility: hidden; height: 0%; position: fixed;}
-                #MainMenu {visibility: hidden; height: 0%;}
-                header {visibility: hidden; height: 0%;}
-                footer {visibility: hidden; height: 0%;}
-                </style>
-                """
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # クエリパラメータからユーザーIDを取得
 query_params = st.experimental_get_query_params()
 user_id = query_params.get('user_id', [None])[0]
+group = query_params.get('group', [None])[0]
+is_second = 'second' in query_params
 
-# プロンプトテンプレート設定
+if "initialized" not in st.session_state:
+    st.session_state['initialized'] = False
+    initial_message = "今日の振り返りをしよう！今日はどんな一日だった？"
+    st.session_state.initge.append(initial_message)
+    st.session_state['initialized'] = True
+
+# メタデータを含むプロンプトテンプレート
 template = """
     今日の出来事を振り返って、ユーザーに自由に感想を語ってもらいましょう。適度な問いかけを行って、会話を促進してください。
-    以下は私の日記情報です。この日記を参考にして、私のことを理解した上で会話をしてください。
-    ただし、「あなたの日記を読んで」など直接日記を読んだ表現は避けてください。
-    ---
-    日記情報:
+    私の日記情報（{context_date} に記入されたもの）も添付します。
+    この日記を読んで、私の事をよく理解した上で会話してください。
+    必要に応じて、私の日記に書かれている情報を参照して、私の事を理解して会話してください。
+    ただ、”あなたの日記を読んでみると”といったような、日記を読んだ動作を直接示すような言葉は出力に含めないでください。
+    さらに、この会話では私の日記に含まれる「エピソード記憶」を適切に会話に盛り込んで話してほしいです。エピソード記憶という言葉の意味は以下に示します。
+    # エピソード記憶とは、人間の記憶の中でも特に個人的な経験や出来事を覚える記憶の種類の一つです。エピソード記憶は、特定の時間と場所に関連する出来事を含む記憶であり、過去の個人的な経験を詳細に思い出すことができる記憶を指します。
+    また、今日は１１月１１日です。必要に応じて日記の記入日も考慮して自然な会話を心掛けてください。
+    敬語は使わないでください。私の友達になったつもりで砕けた口調で話してください。
+    100字以内で話してください。
+    日本語で話してください。
+    私の入力に基づき、次の文脈（<ctx></ctx>で囲まれた部分）とチャット履歴（<hs></hs>で囲まれた部分）を使用して回答してください。:
+    ------
+    <ctx>
     {context}
-    ---
-    <hs>{chat_history}</hs>
-    質問: {question}
-    回答:
-"""
+    </ctx>
+    ------
+    <hs>
+    {chat_history}
+    </hs>
+    ------
+    {question}
+    Answer:
+    """
 
-# PromptTemplate の設定
+# 会話のテンプレートを作成
 prompt = PromptTemplate(
-    input_variables=["chat_history", "context", "question"],
+    input_variables=["chat_history", "context", "context_date", "question"],
     template=template,
 )
 
-# Firebase の初期化
+select_model = "gpt-4o"
+select_temperature = 0.5
+
+hide_streamlit_style = """
+                <style>
+                div[data-testid="stToolbar"] {
+                visibility: hidden;
+                height: 0%;
+                position: fixed;
+                }
+                div[data-testid="stDecoration"] {
+                visibility: hidden;
+                height: 0%;
+                position: fixed;
+                }
+                div[data-testid="stStatusWidget"] {
+                visibility: hidden;
+                height: 0%;
+                position: fixed;
+                }
+                #MainMenu {
+                visibility: hidden;
+                height: 0%;
+                }
+                header {
+                visibility: hidden;
+                height: 0%;
+                }
+                footer {
+                visibility: hidden;
+                height: 0%;
+                }
+                </style>
+                """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 if user_id:
     if not firebase_admin._apps:
+        # 環境変数を読み込む
+        type = st.secrets["type"]
+        project_id = st.secrets["project_id"]
+        private_key_id = st.secrets["private_key_id"]
+        private_key = st.secrets["private_key"].replace('\\n', '\n')
+        client_email = st.secrets["client_email"]
+        client_id = st.secrets["client_id"]
+        auth_uri = st.secrets["auth_uri"]
+        token_uri = st.secrets["token_uri"]
+        auth_provider_x509_cert_url = st.secrets["auth_provider_x509_cert_url"]
+        client_x509_cert_url = st.secrets["client_x509_cert_url"]
+        universe_domain = st.secrets["universe_domain"]
+        # Firebase認証情報を設定
         cred = credentials.Certificate({
-            "type": st.secrets["type"],
-            "project_id": st.secrets["project_id"],
-            "private_key_id": st.secrets["private_key_id"],
-            "private_key": st.secrets["private_key"].replace('\\n', '\n'),
-            "client_email": st.secrets["client_email"],
-            "client_id": st.secrets["client_id"],
-            "auth_uri": st.secrets["auth_uri"],
-            "token_uri": st.secrets["token_uri"],
-            "auth_provider_x509_cert_url": st.secrets["auth_provider_x509_cert_url"],
-            "client_x509_cert_url": st.secrets["client_x509_cert_url"]
-        })
-        firebase_admin.initialize_app(cred)
+            "type": type,
+            "project_id": project_id,
+            "private_key_id": private_key_id,
+            "private_key": private_key,
+            "client_email": client_email,
+            "client_id": client_id,
+            "auth_uri": auth_uri,
+            "token_uri": token_uri,
+            "auth_provider_x509_cert_url": auth_provider_x509_cert_url,
+            "client_x509_cert_url": client_x509_cert_url,
+            "universe_domain": universe_domain
+            })
+        default_app = firebase_admin.initialize_app(cred)
     db = firestore.client()
-
-    # Vector データベースの読み込み
-    db_path = f"./vector_metadata/{user_id}"
+    
+    db_path = f"./vector/{user_id}"
     if os.path.exists(db_path):
-        embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-        database = Chroma(persist_directory=db_path, embedding_function=embeddings)
-        chat = ChatOpenAI(model="gpt-4o", temperature=0.5)
+        embeddings = OpenAIEmbeddings(
+            model="text-embedding-3-large",
+        )
+
+        database = Chroma(
+            persist_directory=db_path,
+            embedding_function=embeddings,
+        )
+
+        chat = ChatOpenAI(
+            model=select_model,
+            temperature=select_temperature,
+        )
+
         retriever = database.as_retriever()
 
-        # メモリ設定
         if "memory" not in st.session_state:
-            st.session_state.memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+            st.session_state.memory = ConversationBufferMemory(
+                memory_key="chat_history",
+                return_messages=True,
+            )
+
         memory = st.session_state.memory
 
-        # ConversationalRetrievalChain の設定
         chain = ConversationalRetrievalChain.from_llm(
             llm=chat,
             retriever=retriever,
@@ -110,53 +180,64 @@ if user_id:
             combine_docs_chain_kwargs={'prompt': prompt}
         )
 
-        # 入力と会話履歴の管理
-        def on_input_change():
-            user_message = st.session_state.user_message
+        #--------------------------------------------
+        if "messages" not in st.session_state:
+            st.session_state.messages = []
+        if "generated" not in st.session_state:
+            st.session_state.generated = []
+        if "past" not in st.session_state:
+            st.session_state.past = []
+        if "count" not in st.session_state:
+            st.session_state.count = 0
 
-            # 日記情報を検索してコンテキストを準備
-            context_data = []
-            retrieved_docs = retriever.get_relevant_documents(user_message)
-            for doc in retrieved_docs:
+        def get_diary_entries():
+            docs = retriever.get_relevant_documents(st.session_state.user_message)
+            entries = []
+            for doc in docs:
+                entry_text = doc.page_content
                 entry_date = doc.metadata.get("date", "日付不明")
-                page_content = doc.page_content
-                context_data.append(f"日付: {entry_date}\n内容: {page_content}")
+                entries.append((entry_text, entry_date))
+            return entries
 
-            # コンテキストとして日記情報を組み込む
-            full_context = "\n\n".join(context_data)
-            full_prompt = template.format(
-                chat_history=memory.load_memory_variables().get("chat_history", ""),
-                context=full_context,
-                question=user_message
-            )
-
-            # 応答生成
-            response_text = chat(full_prompt)
+        def on_input_change():
+            st.session_state.count += 1
+            user_message = st.session_state.user_message
+            entries = get_diary_entries()
+            if entries:
+                context, context_date = entries[0]
+            else:
+                context, context_date = "", "日付不明"
+            with st.spinner("相手からの返信を待っています。。。"):
+                response = chain({"question": user_message, "context": context, "context_date": context_date})
+                response_text = response["answer"]
             st.session_state.past.append(user_message)
             st.session_state.generated.append(response_text)
             st.session_state.user_message = ""
-
-            # Firebase Firestore に会話履歴を保存
+            Agent_1_Human_Agent = "Human" 
+            Agent_2_AI_Agent = "AI" 
             doc_ref = db.collection(str(user_id)).document(str(now))
-            doc_ref.set({"Human": user_message, "AI": response_text})
+            doc_ref.set({
+                Agent_1_Human_Agent: user_message,
+                Agent_2_AI_Agent: response_text
+            })
 
-        # 会話履歴の表示
+        # 会話履歴を表示
         chat_placeholder = st.empty()
         with chat_placeholder.container():
+            message(st.session_state.initge[0], key="init_greeting_plus", avatar_style="micah")
             for i in range(len(st.session_state.generated)):
-                if i == 0:
-                    message(st.session_state.generated[i], key="init_greeting", avatar_style="micah")
-                else:
-                    message(st.session_state.past[i-1], is_user=True, key=f"user_{i}", avatar_style="adventurer", seed="Nala")
-                    message(st.session_state.generated[i], key=f"ai_{i}", avatar_style="micah")
+                message(st.session_state.past[i], is_user=True, key=str(i), avatar_style="adventurer", seed="Nala")
+                key_generated = str(i) + "keyg"
+                message(st.session_state.generated[i], key=str(key_generated), avatar_style="micah")
 
-        # 入力フォーム
-        if "count" not in st.session_state:
-            st.session_state.count = 0
-        if st.session_state.count < 5:
-            user_message = st.text_area("内容を入力して送信ボタンを押してください", key="user_message")
-            st.button("送信", on_click=on_input_change)
-        else:
-            st.markdown("これで今回の会話は終了です。")
+        # 入力エリアと送信ボタン
+        with st.container():
+            if st.session_state.count >= 5:
+                group_url = "https://nagoyapsychology.qualtrics.com/jfe/form/SV_5cZeI9RbaCdozTU"
+                group_url_with_id = f"{group_url}?user_id={user_id}&group={group}"
+                st.markdown(f'これで今回の会話は終了です。こちらをクリックしてアンケートに回答してください。: <a href="{group_url_with_id}" target="_blank">リンク</a>', unsafe_allow_html=True)
+            else:
+                user_message = st.text_area("内容を入力して送信ボタンを押してください", key="user_message")
+                st.button("送信", on_click=on_input_change)
     else:
         st.error(f"No vector database found for student ID {user_id}.")

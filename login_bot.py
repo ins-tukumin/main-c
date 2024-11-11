@@ -1,5 +1,13 @@
 import streamlit as st
 import random
+import datetime
+import pytz
+
+# 日本時間の現在日時を取得
+now = datetime.datetime.now(pytz.timezone('Asia/Tokyo'))
+
+# 月と日を抽出してフォーマット
+today_date = now.strftime("%m月%d日")
 
 # 各グループに対応するURLを定義します
 group_urls = {
@@ -28,7 +36,7 @@ def load_participants(file_path):
 
 # Streamlitアプリケーションのレイアウト
 st.title("ログインページ")
-st.subheader("３日目")
+st.subheader(today_date)
 
 # 参加者のリストを読み込む
 participants = load_participants('group_assignment.txt')
