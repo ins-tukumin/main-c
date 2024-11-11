@@ -238,9 +238,8 @@ if user_id:
                     user_message = st.text_area("内容を入力して送信ボタンを押してください", key="user_message")
                     #st.form_submit_button("送信", on_click=on_input_change) こっちでもいいよ！
                     submit_button = st.form_submit_button("送信")
-
-        if submit_button:
-            on_input_change()  # ボタンが押された際の処理
+                if submit_button:
+                    on_input_change()  # ボタンが押された際の処理
     else:
         st.error(f"No vector database found for student ID {user_id}.")
 

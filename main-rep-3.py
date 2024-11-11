@@ -57,6 +57,7 @@ template = """
     ただ、”あなたの日記を読んでみると”といったような、日記を読んだ動作を直接示すような言葉は出力に含めないでください。
     さらに、この会話では私の日記に含まれる「エピソード記憶」を適切に会話に盛り込んで話してほしいです。エピソード記憶という言葉の意味は以下に示します。
     # エピソード記憶とは、人間の記憶の中でも特に個人的な経験や出来事を覚える記憶の種類の一つです。エピソード記憶は、特定の時間と場所に関連する出来事を含む記憶であり、過去の個人的な経験を詳細に思い出すことができる記憶を指します。
+    また、今日は１１月１１日です。必要に応じて日記の記入日も考慮して自然な会話を心掛けてください。
     敬語は使わないでください。私の友達になったつもりで砕けた口調で話してください。
     100字以内で話してください。
     日本語で話してください。
@@ -69,7 +70,7 @@ template = """
     Answer:
 """
 
-# 会話のテンプレートを作成
+# entry_dateを任意の変数として扱えるようにし、デフォルト値を指定
 prompt = PromptTemplate(
     input_variables=["chat_history", "context", "entry_date", "question"],
     template=template,
@@ -148,7 +149,7 @@ if user_id:
                 # 検索結果から日記の内容と日付メタデータを取得してプロンプトに追加
                 context_data = []
                 for doc in response["context"]:
-                    entry_date = doc.metadata.get("date", "日付不明")  # 日付メタデータ
+                    entry_date = doc.metadata.get("date", "日付不明")  # 日付メタデータがない場合デフォルト値
                     context_data.append({"content": doc.page_content, "date": entry_date})
 
                 # 検索結果をもとに応答を生成
@@ -191,7 +192,11 @@ if user_id:
                 group_url_with_id = f"{group_url}?user_id={user_id}&group={group}"
                 st.markdown(f'これで今回の会話は終了です。こちらをクリックしてアンケートに回答してください。: <a href="{group_url_with_id}" target="_blank">リンク</a>', unsafe_allow_html=True)
             else:
-                user_message = st.text_area("内容を入力して送信ボタンを押してください", key="user_message")
-                st.button("送信", on_click=on_input_change)
+                with st.form(key="message_form", clear_on_submit=True):
+                    user_message = st.text_area("内容を入力して送信ボタンを押してください", key="user_message")
+                    submit_button = st.form_submit_button("送信")
+                if submit_button:
+                    on_input_change()  # ボタンが押された際の処理
+                    
     else:
         st.error(f"No vector database found for student ID {user_id}.")
