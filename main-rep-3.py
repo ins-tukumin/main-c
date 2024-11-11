@@ -181,7 +181,16 @@ if user_id:
                     "chat_history": chat_history
                 })
 
+
+                # ソースドキュメントを確認し、メタデータが正しく含まれているかチェック
+                if 'source_documents' in result:
+                    for doc in result['source_documents']:
+                        # メタデータの存在確認と表示
+                        context = doc.metadata.get('context', 'メタデータがありません')
+                        context_date = doc.metadata.get('context_date', 'メタデータがありません')
+                        st.write(f"Document Metadata - context_date: {context_date}, context: {context}")   
                 # 応答生成
+                
                 response_text = result["answer"]
 
             # 会話履歴を更新
