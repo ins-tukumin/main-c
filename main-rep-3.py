@@ -199,16 +199,27 @@ if user_id:
                 entries.append((entry_text, entry_date))
             return entries
 
+        # ユーザーの入力に基づきチェーンを呼び出す
         def on_input_change():
             st.session_state.count += 1
             user_message = st.session_state.user_message
+
+            # 日記エントリを取得してコンテキストと日付を設定
             entries = get_diary_entries()
             if entries:
                 context, context_date = entries[0]
             else:
                 context, context_date = "", "日付不明"
+
             with st.spinner("相手からの返信を待っています。。。"):
-                response = chain({"question": user_message, "context": context, "context_date": context_date})
+                # `chain` 呼び出しで、すべての必要な引数を渡す
+                response = chain({
+                    "question": user_message, 
+                    "context": context, 
+                    "context_date": context_date, 
+                    "chat_history": memory.load_memory_variables({})["chat_history"]
+                })
+                
                 response_text = response["answer"]
             st.session_state.past.append(user_message)
             st.session_state.generated.append(response_text)
