@@ -10,20 +10,11 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
-
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    SystemMessagePromptTemplate,
-    HumanMessagePromptTemplate,
-    MessagesPlaceholder,
-)
-
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 import datetime
 import pytz
-import time
 
 # 現在時刻 now
 global now
@@ -74,7 +65,7 @@ template = """
     Answer:
     """
 
-# 会話のテンプレートを作成
+# プロンプトテンプレートの設定
 prompt = PromptTemplate(
     input_variables=["chat_history", "context", "context_date", "question"],
     template=template,
@@ -107,10 +98,12 @@ hide_streamlit_style = """
                 header {
                 visibility: hidden;
                 height: 0%;
+                position: fixed;
                 }
                 footer {
                 visibility: hidden;
                 height: 0%;
+                position: fixed;
                 }
                 </style>
                 """
@@ -118,40 +111,26 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 if user_id:
     if not firebase_admin._apps:
-        # 環境変数を読み込む
-        type = st.secrets["type"]
-        project_id = st.secrets["project_id"]
-        private_key_id = st.secrets["private_key_id"]
-        private_key = st.secrets["private_key"].replace('\\n', '\n')
-        client_email = st.secrets["client_email"]
-        client_id = st.secrets["client_id"]
-        auth_uri = st.secrets["auth_uri"]
-        token_uri = st.secrets["token_uri"]
-        auth_provider_x509_cert_url = st.secrets["auth_provider_x509_cert_url"]
-        client_x509_cert_url = st.secrets["client_x509_cert_url"]
-        universe_domain = st.secrets["universe_domain"]
         # Firebase認証情報を設定
         cred = credentials.Certificate({
-            "type": type,
-            "project_id": project_id,
-            "private_key_id": private_key_id,
-            "private_key": private_key,
-            "client_email": client_email,
-            "client_id": client_id,
-            "auth_uri": auth_uri,
-            "token_uri": token_uri,
-            "auth_provider_x509_cert_url": auth_provider_x509_cert_url,
-            "client_x509_cert_url": client_x509_cert_url,
-            "universe_domain": universe_domain
-            })
-        default_app = firebase_admin.initialize_app(cred)
+            "type": st.secrets["type"],
+            "project_id": st.secrets["project_id"],
+            "private_key_id": st.secrets["private_key_id"],
+            "private_key": st.secrets["private_key"].replace('\\n', '\n'),
+            "client_email": st.secrets["client_email"],
+            "client_id": st.secrets["client_id"],
+            "auth_uri": st.secrets["auth_uri"],
+            "token_uri": st.secrets["token_uri"],
+            "auth_provider_x509_cert_url": st.secrets["auth_provider_x509_cert_url"],
+            "client_x509_cert_url": st.secrets["client_x509_cert_url"],
+            "universe_domain": st.secrets["universe_domain"]
+        })
+        firebase_admin.initialize_app(cred)
     db = firestore.client()
     
     db_path = f"./vector/{user_id}"
     if os.path.exists(db_path):
-        embeddings = OpenAIEmbeddings(
-            model="text-embedding-3-large",
-        )
+        embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
 
         database = Chroma(
             persist_directory=db_path,
@@ -173,11 +152,13 @@ if user_id:
 
         memory = st.session_state.memory
 
+        # ConversationalRetrievalChain の設定
         chain = ConversationalRetrievalChain.from_llm(
             llm=chat,
             retriever=retriever,
             memory=memory,
-            combine_docs_chain_kwargs={'prompt': prompt}
+            combine_docs_chain_kwargs={'prompt': prompt},
+            return_source_documents=True  # ソースドキュメントを返す
         )
 
         #--------------------------------------------
@@ -190,40 +171,50 @@ if user_id:
         if "count" not in st.session_state:
             st.session_state.count = 0
 
-        def get_diary_entries():
-            docs = retriever.get_relevant_documents(st.session_state.user_message)
-            entries = []
-            for doc in docs:
-                entry_text = doc.page_content
-                entry_date = doc.metadata.get("date", "日付不明")
-                entries.append((entry_text, entry_date))
-            return entries
-
-        # ユーザーの入力に基づきチェーンを呼び出す
         def on_input_change():
             st.session_state.count += 1
             user_message = st.session_state.user_message
-
-            # 日記エントリを取得してコンテキストと日付を設定
-            entries = get_diary_entries()
-            if entries:
-                context, context_date = entries[0]
-            else:
-                context, context_date = "", "日付不明"
+            chat_history = memory.load_memory_variables({})["chat_history"]
 
             with st.spinner("相手からの返信を待っています。。。"):
-                # `chain` 呼び出しで、すべての必要な引数を渡す
-                response = chain({
+                # chain 呼び出し時にソースドキュメントを取得
+                result = chain({
                     "question": user_message, 
-                    "context": context, 
-                    "context_date": context_date, 
-                    "chat_history": memory.load_memory_variables({})["chat_history"]
+                    "chat_history": chat_history
                 })
-                
+
+                # ソースドキュメントからメタデータ（例：日付）を取得
+                if 'source_documents' in result:
+                    source_docs = result['source_documents']
+                    if source_docs:
+                        # 最初のドキュメントのメタデータから日付を取得
+                        context = source_docs[0].page_content
+                        context_date = source_docs[0].metadata.get("date", "日付不明")
+                    else:
+                        context = ""
+                        context_date = "日付不明"
+                else:
+                    context = ""
+                    context_date = "日付不明"
+
+                # プロンプトに `context` と `context_date` を含めて再度 `chain` を呼び出す
+                response = chain(
+                    {
+                        "question": user_message,
+                        "context": context,
+                        "context_date": context_date,
+                        "chat_history": chat_history
+                    }
+                )
+
                 response_text = response["answer"]
+
+            # 会話履歴を更新
             st.session_state.past.append(user_message)
             st.session_state.generated.append(response_text)
             st.session_state.user_message = ""
+
+            # Firebase Firestoreに会話を保存
             Agent_1_Human_Agent = "Human" 
             Agent_2_AI_Agent = "AI" 
             doc_ref = db.collection(str(user_id)).document(str(now))
@@ -232,7 +223,7 @@ if user_id:
                 Agent_2_AI_Agent: response_text
             })
 
-        # 会話履歴を表示
+        # 会話履歴の表示
         chat_placeholder = st.empty()
         with chat_placeholder.container():
             message(st.session_state.initge[0], key="init_greeting_plus", avatar_style="micah")
