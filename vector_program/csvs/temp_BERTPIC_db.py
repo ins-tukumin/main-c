@@ -80,7 +80,7 @@ def generate_topic_model(processed_texts):
         )
         
         response = openai.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4o",
             temperature=0.3,
             messages=[
                 {"role": "system", "content": "あなたは専門的な文章を理解して簡潔で、他と重複しないトピック名を提供するアシスタントです。日本語で話します。"},
