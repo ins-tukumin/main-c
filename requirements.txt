@@ -3,7 +3,7 @@ langchain==0.3.7
 streamlit==1.39.0
 streamlit_chat==0.1.1
 firebase_admin==6.6.0
-credentials==0.0.8
+credentials==1.1
 firestore==0.0.8
 datetime==1.1
 pytz==2024.2
