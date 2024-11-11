@@ -192,11 +192,9 @@ if user_id:
                 group_url_with_id = f"{group_url}?user_id={user_id}&group={group}"
                 st.markdown(f'これで今回の会話は終了です。こちらをクリックしてアンケートに回答してください。: <a href="{group_url_with_id}" target="_blank">リンク</a>', unsafe_allow_html=True)
             else:
-                with st.form(key="message_form", clear_on_submit=True):
-                    user_message = st.text_area("内容を入力して送信ボタンを押してください", key="user_message")
-                    submit_button = st.form_submit_button("送信")
-                if submit_button:
-                    on_input_change()  # ボタンが押された際の処理
+                user_message = st.text_area("内容を入力して送信ボタンを押してください", key="user_message")
+                submit_button = st.form_submit_button("送信")
+                st.button("送信", on_click=on_input_change)
                     
     else:
         st.error(f"No vector database found for student ID {user_id}.")
