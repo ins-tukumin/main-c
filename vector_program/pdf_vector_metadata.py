@@ -12,7 +12,8 @@ pdf_directory = "./pdfs"
 db_directory = "../vector_metadata"
 
 # 日付を検出するための正規表現パターン
-date_pattern = re.compile(r"(\d{1,2})月(\d{1,2})日")
+# date_pattern = re.compile(r"(\d{1,2})月(\d{1,2})日")
+date_pattern = re.compile(r"(0?[1-9]|1[0-2])月(0?[1-9]|[12][0-9]|3[01])日")
 
 # 各PDFファイルに対してベクトルデータベースを作成
 for pdf_file in os.listdir(pdf_directory):
