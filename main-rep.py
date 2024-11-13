@@ -84,9 +84,10 @@ template = """
 
 # 会話のテンプレートを作成
 prompt = PromptTemplate(
-    input_variables=["chat_history", "context", "question", "today_date"],
+    input_variables=["chat_history", "context", "question"],
     template=template,
 )
+
 select_model = "gpt-4o"
 select_temperature = 0.5
 hide_streamlit_style = """
