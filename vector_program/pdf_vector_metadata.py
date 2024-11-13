@@ -20,9 +20,11 @@ def split_entries_by_date(text):
     pattern = r"([0-9０-９]{2}月[0-9０-９]{2}日)"  # 日付のパターンを正規表現で定義
     sections = re.split(pattern, text)
     for i in range(1, len(sections), 2):
+        date = sections[i].strip()      # 日付を取得
         content = sections[i + 1].strip()  # 日記の内容を取得
         if content:
-            entries.append(content)  # 日付ごとに内容を追加
+            # 日付と内容を結合して1つのエントリとして追加
+            entries.append(f"{date} {content}")
     return entries
 
 # 各PDFファイルに対してベクトルデータベースを作成

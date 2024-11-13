@@ -29,6 +29,10 @@ import time
 global now
 now = datetime.datetime.now(pytz.timezone('Asia/Tokyo'))
 
+# 月と日を抽出してフォーマット
+global today_date
+today_date = now.strftime("%m月%d日")
+
 if "generated" not in st.session_state:
     st.session_state.generated = []
     st.session_state.initge = []
@@ -60,7 +64,7 @@ template = """
     ただ、”あなたの日記を読んでみると”といったような、日記を読んだ動作を直接示すような言葉は出力に含めないでください。
     さらに、この会話では私の日記に含まれる「エピソード記憶」を適切に会話に盛り込んで話してほしいです。エピソード記憶という言葉の意味は以下に示します。
     # エピソード記憶とは、人間の記憶の中でも特に個人的な経験や出来事を覚える記憶の種類の一つです。エピソード記憶は、特定の時間と場所に関連する出来事を含む記憶であり、過去の個人的な経験を詳細に思い出すことができる記憶を指します。
-    また、今日は１１月１１日です。必要に応じて日記の記入日も考慮して自然な会話を心掛けてください。
+    また、今日は{today_date}です。必要に応じて日記の記入日も考慮して自然な会話を心掛けてください。
     敬語は使わないでください。私の友達になったつもりで砕けた口調で話してください。
     100字以内で話してください。
     日本語で話してください。
@@ -80,7 +84,7 @@ template = """
 
 # 会話のテンプレートを作成
 prompt = PromptTemplate(
-    input_variables=["chat_history", "context", "question"],
+    input_variables=["chat_history", "context", "question", "today_date"],
     template=template,
 )
 select_model = "gpt-4o"
