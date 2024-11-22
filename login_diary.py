@@ -1,6 +1,14 @@
 # 本実験後半３日に合わせるためのダミーログインページなので、直接qualtricsURLへ案内してもよい
 import streamlit as st
 import random
+import datetime
+import pytz
+
+# 日本時間の現在日時を取得
+now = datetime.datetime.now(pytz.timezone('Asia/Tokyo'))
+
+# 月と日を抽出してフォーマット
+today_date = now.strftime("%m月%d日")
 
 # 特定のURLを定義します
 # special_url = "https://nagoyapsychology.qualtrics.com/jfe/form/SV_55DnU55WeDglj4G"
@@ -8,7 +16,7 @@ special_url = "https://chat-c.streamlit.app/"
 
 # Streamlitアプリケーションのレイアウト
 st.title("ログインページ")
-st.subheader("1日目")
+st.subheader(today_date)
 
 # ユーザー入力を受け取る
 user_id = st.text_input("クラウドワークスIDを入力してください")
