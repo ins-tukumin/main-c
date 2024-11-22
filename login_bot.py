@@ -12,8 +12,8 @@ today_date = now.strftime("%m月%d日")
 # 各グループに対応するURLを定義します
 group_urls = {
     "groupa": "https://chat-c.streamlit.app/",
-    "groupb": "https://chat-c.streamlit.app/",
-    "groupc": "https://chat-c.streamlit.app/"
+    "groupb": "https://chat-r.streamlit.app/",
+    "groupc": "https://chat-rep.streamlit.app/"
 }
 #"groupa": "https://chat-c.streamlit.app/",
 #"groupb": "https://chat-r.streamlit.app/",
