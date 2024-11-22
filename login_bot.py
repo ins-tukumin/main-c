@@ -12,9 +12,12 @@ today_date = now.strftime("%m月%d日")
 # 各グループに対応するURLを定義します
 group_urls = {
     "groupa": "https://chat-c.streamlit.app/",
-    "groupb": "https://chat-r.streamlit.app/",
-    "groupc": "https://chat-rep.streamlit.app/"
+    "groupb": "https://chat-c.streamlit.app/",
+    "groupc": "https://chat-c.streamlit.app/"
 }
+#"groupa": "https://chat-c.streamlit.app/",
+#"groupb": "https://chat-r.streamlit.app/",
+#"groupc": "https://chat-rep.streamlit.app/"
 
 # 特別なURLを定義します
 special_url = "https://www.google.com"
