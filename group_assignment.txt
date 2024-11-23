@@ -1,5 +1,6 @@
 ﻿user_id,group
 878721,groupa
+878721,groupa
 94338,groupa
 95866,groupa
 acu9751cw,groupa
@@ -154,3 +155,10 @@ yoimachigusa,groupc
 5957432,groupc
 4658590,groupc
 704086,groupc
+5969963,groupa
+1795284,groupa
+4232044,groupa
+5621458,groupa
+1798984,groupa
+1268168,groupa
+2928860,groupa

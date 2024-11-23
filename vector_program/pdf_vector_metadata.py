@@ -12,7 +12,7 @@ from langchain.schema import Document
 pdf_directory = "./pdfs"
 
 # ベクトルデータベースを保存するディレクトリ
-db_directory = "../vector_meta"
+db_directory = "../vector_2nd"
 
 # 日記データを日付ごとに分割する関数
 def split_entries_by_date(text):
