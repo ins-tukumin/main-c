@@ -7,7 +7,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 
 # CSVファイルの読み込み
-file_path = 'csvs/mainfiles/analysis/2ndexp/1123_with_group.csv'
+file_path = 'csvs/mainfiles/analysis/2ndexp/file1_with_group.csv'
 df = pd.read_csv(file_path)
 
 # 不要な列を削除
@@ -24,7 +24,7 @@ def clean_text(text):
 df['Q1'] = df['Q1'].apply(clean_text)
 
 # 出力フォルダーのパスを指定
-output_folder = 'pdfs'
+output_folder = 'pdfs2'
 
 # 出力フォルダが存在しない場合は作成
 if not os.path.exists(output_folder):
