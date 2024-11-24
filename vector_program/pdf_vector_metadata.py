@@ -9,10 +9,10 @@ from langchain.schema import Document
 # os.environ["OPENAI_API_KEY"] = "your_openai_api_key"
 
 # PDFが格納されているディレクトリ
-pdf_directory = "./pdfs"
+pdf_directory = "./pdfs2"
 
 # ベクトルデータベースを保存するディレクトリ
-db_directory = "../vector_2nd"
+db_directory = "../vector_tempaaa"
 
 # 日記データを日付ごとに分割する関数
 def split_entries_by_date(text):
