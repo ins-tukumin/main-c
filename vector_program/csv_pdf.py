@@ -7,7 +7,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 
 # CSVファイルの読み込み
-file_path = 'csvs/mainfiles/analysis/2ndexp/file1_with_group.csv'
+file_path = 'csvs/mainfiles/analysis/2ndexp/1123_with_group.csv'
 df = pd.read_csv(file_path)
 
 # 不要な列を削除
