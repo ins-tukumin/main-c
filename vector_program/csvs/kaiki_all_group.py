@@ -43,7 +43,7 @@ for dependent_var in dependent_variables:
     residuals = model.resid
     residuals_std = np.std(residuals)  # 残差の標準偏差の計算
 
-        # Shapiro-Wilk検定の実行
+    # Shapiro-Wilk検定の実行
     shapiro_test_stat, shapiro_p_value = shapiro(residuals)
 
     # 検定結果の出力
@@ -82,4 +82,4 @@ for dependent_var in dependent_variables:
 results_df = pd.DataFrame(results_list)
 
 # 残差の標準偏差をCSVファイルに保存
-# results_df.to_csv('all_residuals_std_results.csv', index=False)
+results_df.to_csv('all_residuals_std_results.csv', index=False)

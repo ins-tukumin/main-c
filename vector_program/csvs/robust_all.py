@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import jarque_bera
 from statsmodels.stats.stattools import omni_normtest
+from scipy.stats import shapiro
 
 # 残差の標準偏差を含むCSVファイルを読み込む
 residuals_df = pd.read_csv('all_residuals_std_results.csv')
@@ -23,7 +24,12 @@ dependent_variables = [
     'ave_willingness', 'ave_understanding'
 ]  # 複数の従属変数
 
-def run_robust_regression(dependent_var):
+df['group_c'] = pd.get_dummies(df['group'], drop_first=True).astype(int)
+# 統制変数を指定
+control_variables = ['group_c']  # 統制変数リスト
+print(df)
+
+def run_robust_regression(dependent_var, control_vars=[]):
     """指定された従属変数に対してロバスト回帰を実行し、結果を出力する関数"""
     
     # 従属変数の選択
@@ -46,7 +52,7 @@ def run_robust_regression(dependent_var):
     print(f'Using Huber threshold (delta) for dependent variable {dependent_var}: {delta}')
 
     # 説明変数に定数項を追加（回帰分析のため）
-    X = sm.add_constant(df[explanatory_variable])
+    X = sm.add_constant(df[[explanatory_variable] + control_vars])
 
     # ロバスト回帰の実行（Huber’s T normを使用）
     model = sm.RLM(y, X, M=norms.HuberT(t=delta)).fit()
@@ -59,13 +65,20 @@ def run_robust_regression(dependent_var):
     residuals = model.resid
 
     # 残差の検定
-    jb_test = jarque_bera(residuals)
-    print(f'Jarque-Bera test for residuals of {dependent_var}:')
-    print(f'Statistic: {jb_test.statistic}, p-value: {jb_test.pvalue}')
+    #jb_test = jarque_bera(residuals)
+    #print(f'Jarque-Bera test for residuals of {dependent_var}:')
+    #print(f'Statistic: {jb_test.statistic}, p-value: {jb_test.pvalue}')
 
-    omni_test = omni_normtest(residuals)
-    print(f'Omnibus test for residuals of {dependent_var}:')
-    print(f'Statistic: {omni_test.statistic}, p-value: {omni_test.pvalue}')
+    #omni_test = omni_normtest(residuals)
+    #print(f'Omnibus test for residuals of {dependent_var}:')
+    #print(f'Statistic: {omni_test.statistic}, p-value: {omni_test.pvalue}')
+
+    # Shapiro-Wilk検定の実行
+    shapiro_test_stat, shapiro_p_value = shapiro(residuals)
+
+    # 検定結果の出力
+    print(f'Shapiro-Wilk Test for {dependent_var}:')
+    print(f'Statistic: {shapiro_test_stat}, p-value: {shapiro_p_value}\n')
 
     # プロットの作成
     plt.figure(figsize=(8, 6))
@@ -81,9 +94,9 @@ def run_robust_regression(dependent_var):
     plt.grid(False)
 
     # SVGファイルとして保存
-    plt.savefig(f"SVGs/{dependent_var}_regression_plot.svg", format="svg")
+    # plt.savefig(f"SVGs/{dependent_var}_regression_plot.svg", format="svg")
     plt.close()  # プロットを閉じてメモリを解放
 
 # 各従属変数に対してロバスト回帰を実行
 for dependent_var in dependent_variables:
-    run_robust_regression(dependent_var)
+    run_robust_regression(dependent_var, control_vars=control_variables)

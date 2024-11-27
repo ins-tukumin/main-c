@@ -2,6 +2,7 @@ import pandas as pd
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.stats import shapiro
 
 # CSVファイルを読み込む
 df = pd.read_csv('BIGBERT.csv')
@@ -51,6 +52,13 @@ for group in groups:
             'residuals_std': residuals_std
         })
 
+        # Shapiro-Wilk検定の実行
+        shapiro_test_stat, shapiro_p_value = shapiro(residuals)
+
+        # 検定結果の出力
+        print(f'Shapiro-Wilk Test for {dependent_var}:')
+        print(f'Statistic: {shapiro_test_stat}, p-value: {shapiro_p_value}\n')
+
         # 回帰直線を引くための予測値
         predictions = model.predict(X)
 
@@ -71,10 +79,10 @@ for group in groups:
         plt.grid(False)
 
         # SVGファイルとして保存
-        plt.savefig(f"SVGs/{dependent_var}_regression_plot.svg", format="svg")
+        #plt.savefig(f"SVGs/{dependent_var}_regression_plot.svg", format="svg")
 
 # 結果をデータフレームに変換
 results_df = pd.DataFrame(results_list)
 
 # 残差の標準偏差をCSVファイルに保存
-results_df.to_csv('residuals_std_results.csv', index=False)
+#results_df.to_csv('residuals_std_results.csv', index=False)
