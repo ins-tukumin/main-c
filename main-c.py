@@ -97,10 +97,19 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 # デコレータを使わない会話履歴読み込み for セッション管理
 def load_conversation():
     if not hasattr(st.session_state, "conversation"):
-        llm = ChatOpenAI(
-            model_name=model_select,
-            temperature=0.5
-        )
+
+        llm_params = {
+            "model_name": model_select,
+            "temperature": 0.5,
+        }
+        # 不要な引数を削除
+        llm_params.pop("proxies", None)
+        llm = ChatOpenAI(**llm_params)
+        #llm = ChatOpenAI(
+        #    model_name=model_select,
+        #    temperature=0.5
+        #)
+
         memory = ConversationBufferMemory(return_messages=True)
         st.session_state.conversation = ConversationChain(
             memory=memory,
