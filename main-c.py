@@ -16,6 +16,10 @@ from firebase_admin import firestore
 import datetime
 import pytz
 import time
+import openai
+
+# Streamlit secretsからAPIキーを取得
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 #現在時刻
 global now
