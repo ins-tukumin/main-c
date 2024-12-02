@@ -82,4 +82,4 @@ for dependent_var in dependent_variables:
 results_df = pd.DataFrame(results_list)
 
 # 残差の標準偏差をCSVファイルに保存
-results_df.to_csv('all_residuals_std_results.csv', index=False)
+# results_df.to_csv('all_residuals_std_results.csv', index=False)

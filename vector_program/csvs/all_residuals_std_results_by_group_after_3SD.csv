@@ -1,0 +1,13 @@
+group,dependent_var,residuals_std
+groupa,ave_PANAS_P,0.7916264971671896
+groupa,ave_PANAS_N,0.775041859466303
+groupa,ave_competence,0.5249033642722377
+groupa,ave_warmth,0.5042093822247754
+groupa,ave_willingness,0.784980047998241
+groupa,ave_understanding,0.5554492473218967
+groupc,ave_PANAS_P,0.8405541872632711
+groupc,ave_PANAS_N,0.5060976813861925
+groupc,ave_competence,0.5961859886039744
+groupc,ave_warmth,0.36283157066115446
+groupc,ave_willingness,0.7842249109496933
+groupc,ave_understanding,0.5185914138501733

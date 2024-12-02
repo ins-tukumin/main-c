@@ -52,7 +52,8 @@ def run_robust_regression(dependent_var, control_vars=[]):
     print(f'Using Huber threshold (delta) for dependent variable {dependent_var}: {delta}')
 
     # 説明変数に定数項を追加（回帰分析のため）
-    X = sm.add_constant(df[[explanatory_variable] + control_vars])
+    # X = sm.add_constant(df[[explanatory_variable] + control_vars])
+    X = sm.add_constant(df[explanatory_variable])
 
     # ロバスト回帰の実行（Huber’s T normを使用）
     model = sm.RLM(y, X, M=norms.HuberT(t=delta)).fit()
@@ -85,16 +86,21 @@ def run_robust_regression(dependent_var, control_vars=[]):
     plt.scatter(df[explanatory_variable], y)
     plt.plot(df[explanatory_variable], model.predict(X), color='red')
 
+    # 軸のフォントサイズの設定
+    font_size = 20  # 任意のフォントサイズ
+    plt.xticks(fontsize=font_size)
+    plt.yticks(fontsize=font_size)
+
     # タイトルとラベルの設定
-    plt.title(f'Robust Regression: {dependent_var} ~ {explanatory_variable}')
+    # plt.title(f'Robust Regression: {dependent_var} ~ {explanatory_variable}')
     plt.xlim(0.3, 0.8)  # X軸の範囲
-    plt.yticks(np.arange(1.0, 6.0, 1.0))
-    plt.ylim(0.9, 5.1)  # Y軸の範囲
+    plt.yticks(np.arange(1.0, 7.0, 1.0))
+    plt.ylim(0.9, 6.1)  # Y軸の範囲
     plt.legend()
     plt.grid(False)
 
     # SVGファイルとして保存
-    # plt.savefig(f"SVGs/{dependent_var}_regression_plot.svg", format="svg")
+    plt.savefig(f"SVGs/{dependent_var}_regression_plot.svg", format="svg")
     plt.close()  # プロットを閉じてメモリを解放
 
 # 各従属変数に対してロバスト回帰を実行
