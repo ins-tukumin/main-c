@@ -1,7 +1,7 @@
 import pandas as pd
 
 # CSVファイルのパス
-csv1_path = "mainfiles/analysis/dialy_file.csv"  # 1つ目のCSVファイル（間違ったgroup列）
+csv1_path = "mainfiles/analysis/FINAL_dialy_file.csv"  # 1つ目のCSVファイル（間違ったgroup列）
 csv2_path = "../../group_assignment.csv"  # 2つ目のCSVファイル（正しいgroup列）
 
 # CSVを読み込む
@@ -28,6 +28,6 @@ for _, row in df2.iterrows():
 print(f"Updated group values for {updated_groups} rows.")
 
 # 上書き後のCSVを保存
-output_path = "mainfiles/analysis/dialy_file_added_group.csv"
+output_path = "mainfiles/analysis/FINAL_dialy_file.csv"
 df1.to_csv(output_path, index=False, encoding="utf-8")
 print(f"Updated CSV saved to {output_path}.")

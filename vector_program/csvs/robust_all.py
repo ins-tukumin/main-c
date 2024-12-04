@@ -8,7 +8,7 @@ from statsmodels.stats.stattools import omni_normtest
 from scipy.stats import shapiro
 
 # 残差の標準偏差を含むCSVファイルを読み込む
-residuals_df = pd.read_csv('all_residuals_std_results.csv')
+residuals_df = pd.read_csv('TOPIC_all_residuals_std_results.csv')
 
 # 元のデータセットのCSVファイルを読み込む
 df = pd.read_csv('BIGBERT.csv')
@@ -17,7 +17,7 @@ df = pd.read_csv('BIGBERT.csv')
 df = df[df['group'] != 'groupb']
 
 # 説明変数と従属変数の指定
-explanatory_variable = 'ave_cos_BERT_diary_Human'  # 説明変数
+explanatory_variable = 'stan_topic_count'  # 説明変数
 dependent_variables = [
     'ave_PANAS_P', 'ave_PANAS_N',
     'ave_competence', 'ave_warmth',
@@ -93,14 +93,14 @@ def run_robust_regression(dependent_var, control_vars=[]):
 
     # タイトルとラベルの設定
     # plt.title(f'Robust Regression: {dependent_var} ~ {explanatory_variable}')
-    plt.xlim(0.3, 0.8)  # X軸の範囲
+    plt.xlim(-0.02, 1.02)  # X軸の範囲
     plt.yticks(np.arange(1.0, 7.0, 1.0))
     plt.ylim(0.9, 6.1)  # Y軸の範囲
     plt.legend()
     plt.grid(False)
 
     # SVGファイルとして保存
-    plt.savefig(f"SVGs/{dependent_var}_regression_plot.svg", format="svg")
+    plt.savefig(f"topic_SVGs/{dependent_var}_regression_plot.svg", format="svg")
     plt.close()  # プロットを閉じてメモリを解放
 
 # 各従属変数に対してロバスト回帰を実行

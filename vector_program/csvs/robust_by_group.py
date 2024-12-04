@@ -6,7 +6,7 @@ from scipy.stats import shapiro
 import numpy as np
 
 # 残差の標準偏差を含むCSVファイルを読み込む
-residuals_df = pd.read_csv('all_residuals_std_results_by_group.csv')
+residuals_df = pd.read_csv('TOPIC_residuals_std_results_by_group.csv')
 
 # 元のデータセットのCSVファイルを読み込む
 df = pd.read_csv('BIGBERT.csv')
@@ -15,7 +15,7 @@ df = pd.read_csv('BIGBERT.csv')
 df = df[df['group'] != 'groupb']
 
 # 説明変数と従属変数の指定
-explanatory_variable = 'ave_cos_BERT_diary_Human'  # 説明変数
+explanatory_variable = 'stan_topic_count'  # 説明変数
 dependent_variables = [
     'ave_PANAS_P', 'ave_PANAS_N',
     'ave_competence', 'ave_warmth',
@@ -82,14 +82,15 @@ def run_robust_regression_by_group(dependent_var, group_value, control_vars=[]):
     plt.xticks(fontsize=font_size)
     plt.yticks(fontsize=font_size)
 
-    # 軸と範囲の設定
-    plt.xlim(0.3, 0.8)  # X軸の範囲
+    # plt.title(f'Robust Regression: {dependent_var} ~ {explanatory_variable}')
+    plt.xlim(-0.02, 1.02)  # X軸の範囲
     plt.yticks(np.arange(1.0, 6.0, 1.0))
     plt.ylim(0.9, 5.1)  # Y軸の範囲
+    plt.legend()
     plt.grid(False)
 
     # SVGファイルとして保存
-    plt.savefig(f"SVGs/{dependent_var}_regression_plot_group_{group_value}.svg", format="svg")
+    plt.savefig(f"SVGs/temp_{dependent_var}_regression_plot_group_{group_value}.svg", format="svg")
     plt.close()  # プロットを閉じてメモリを解放
 
 # グループごとにロバスト回帰を実行

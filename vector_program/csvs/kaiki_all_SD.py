@@ -11,7 +11,7 @@ df = pd.read_csv('BIGBERT.csv')
 df = df[df['group'] != 'groupb']
 
 # 説明変数と従属変数の指定
-explanatory_variable = 'ave_cos_BERT_diary_Human'  # 説明変数
+explanatory_variable = 'stan_topic_count'  # 説明変数
 dependent_variables = [
     'ave_PANAS_P', 'ave_PANAS_N',
     'ave_competence',

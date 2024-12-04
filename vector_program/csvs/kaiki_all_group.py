@@ -14,7 +14,7 @@ df = df[df['group'] != 'groupb']
 results_list = []
 
 # 説明変数と従属変数の指定
-explanatory_variable = 'ave_cos_BERT_diary_Human'  # 説明変数
+explanatory_variable = 'stan_topic_count'  # 説明変数
 dependent_variables = [
     'ave_PANAS_P', 'ave_PANAS_N',
     'ave_competence',
@@ -75,11 +75,11 @@ for dependent_var in dependent_variables:
     plt.legend()
     plt.grid(False)
     # plt.show()
-    # plt.savefig(f"SVGs/{dependent_var}_regression_plot.svg", format="svg")
+    plt.savefig(f"topic_SVGs/{dependent_var}_regression_plot.svg", format="svg")
     plt.close()  # プロットを閉じてメモリを解放
 
 # 結果をデータフレームに変換
 results_df = pd.DataFrame(results_list)
 
 # 残差の標準偏差をCSVファイルに保存
-# results_df.to_csv('all_residuals_std_results.csv', index=False)
+results_df.to_csv('TOPIC_all_residuals_std_results.csv', index=False)

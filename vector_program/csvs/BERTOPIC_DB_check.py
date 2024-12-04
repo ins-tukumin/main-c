@@ -1,18 +1,28 @@
 import pandas as pd
 
-# CSVファイルのパス
-csv_path = "mainfiles/analysis/dialy_file_added_group.csv"  # 対象のCSVファイル
+# CSVファイルの読み込み
+csv1_path = 'mainfiles/analysis/dialy_file.csv'  # 1つ目のCSVファイルのパス
+csv2_path = 'BIGBERT.csv'  # 2つ目のCSVファイルのパス
+output_path = 'mainfiles/analysis/FINAL_dialy_file.csv'  # 出力先のCSVファイルのパス
 
-# CSVを読み込む
-df = pd.read_csv(csv_path)
+# データフレームを読み込む
+df1 = pd.read_csv(csv1_path)
+df2 = pd.read_csv(csv2_path)
 
-# user_idごとの出現回数を集計
-user_counts = df['user_id'].value_counts()
+# 両方のCSVに存在するuser_idを取得
+common_user_ids = set(df1['user_id']).intersection(set(df2['user_id']))
 
-# 出現回数が3回以下のuser_idを取得
-filtered_user_ids = user_counts[user_counts <= 5].index.tolist()
+# 削除するuser_idを特定
+removed_user_ids = set(df1['user_id']) - common_user_ids
 
-# 出現回数が3回以下のuser_idをprint
-print("User IDs appearing 3 times or fewer:")
-for user_id in filtered_user_ids:
-    print(f"user_id: {user_id}, count: {user_counts[user_id]}")
+# 削除されたuser_idを出力
+print("削除されたuser_id:")
+print(removed_user_ids)
+
+# 1つ目のCSVをフィルタリング
+filtered_df1 = df1[df1['user_id'].isin(common_user_ids)]
+
+# 結果を新しいCSVに保存
+filtered_df1.to_csv(output_path, index=False)
+
+print(f"フィルタリング後のCSVを保存しました: {output_path}")

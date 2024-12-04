@@ -6,7 +6,7 @@ from scipy.stats import shapiro
 import numpy as np
 
 # Load residuals standard deviation CSV
-residuals_df = pd.read_csv('all_residuals_std_results_by_group.csv')
+residuals_df = pd.read_csv('TOPIC_residuals_std_results_by_group.csv')
 
 # Load original dataset
 df = pd.read_csv('BIGBERT.csv')
@@ -15,7 +15,7 @@ df = pd.read_csv('BIGBERT.csv')
 df = df[df['group'] != 'groupb']
 
 # Specify explanatory and dependent variables
-explanatory_variable = 'ave_cos_BERT_diary_Human'
+explanatory_variable = 'stan_topic_count'
 dependent_variables = [
     'ave_PANAS_P', 'ave_PANAS_N',
     'ave_competence', 'ave_warmth',
@@ -85,14 +85,15 @@ def run_robust_regression_and_plot(dependent_var):
     #plt.title(f'Regression: {dependent_var} ~ {explanatory_variable}')
     #plt.xlabel('Human-Diary')
     #plt.ylabel(dependent_var)
-    # 軸と範囲の設定
-    plt.xlim(0.3, 0.8)  # X軸の範囲
-    plt.yticks(np.arange(1.0, 7.0, 1.0))
-    plt.ylim(0.9, 6.1)  # Y軸の範囲
+    # plt.title(f'Robust Regression: {dependent_var} ~ {explanatory_variable}')
+    plt.xlim(-0.02, 1.02)  # X軸の範囲
+    plt.yticks(np.arange(1.0, 6.0, 1.0))
+    plt.ylim(0.9, 5.1)  # Y軸の範囲
+    plt.legend()
     plt.grid(False)
 
     # Save combined plot as SVG
-    plt.savefig(f"SVGs/{dependent_var}_combined_regression_plot.svg", format="svg")
+    plt.savefig(f"topic_SVGs/{dependent_var}_combined_regression_plot.svg", format="svg")
     plt.close()  # Close the plot to free memory
 
 # Perform robust regression and create combined plots for each dependent variable
