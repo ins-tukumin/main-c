@@ -68,7 +68,7 @@ template = """
     ただ、”あなたの日記を読んでみると”といったような、日記を読んだ動作を直接示すような言葉は出力に含めないでください。
     さらに、この会話では私の日記に含まれる「エピソード記憶」を適切に会話に盛り込んで話してほしいです。エピソード記憶という言葉の意味は以下に示します。
     # エピソード記憶とは、人間の記憶の中でも特に個人的な経験や出来事を覚える記憶の種類の一つです。エピソード記憶は、特定の時間と場所に関連する出来事を含む記憶であり、過去の個人的な経験を詳細に思い出すことができる記憶を指します。
-    また、今日は12月14日です。必要に応じて日記の記入日も考慮して自然な会話を心掛けてください。
+    また、今日は12月15日です。必要に応じて日記の記入日も考慮して自然な会話を心掛けてください。
     敬語は使わないでください。私の友達になったつもりで砕けた口調で話してください。
     100字以内で話してください。
     日本語で話してください。
@@ -240,8 +240,8 @@ if user_id:
 
         with st.container():
             if st.session_state.count >= 5:
-                group_url = "https://nagoyapsychology.qualtrics.com/jfe/form/SV_5cZeI9RbaCdozTU"
-                # group_url = "https://nagoyapsychology.qualtrics.com/jfe/form/SV_55DnU55WeDglj4G"
+                # group_url = "https://nagoyapsychology.qualtrics.com/jfe/form/SV_5cZeI9RbaCdozTU"
+                group_url = "https://nagoyapsychology.qualtrics.com/jfe/form/SV_55DnU55WeDglj4G"
                 group_url_with_id = f"{group_url}?user_id={user_id}&group={group}"
                 st.markdown(f'これで今回の会話は終了です。こちらをクリックしてアンケートに回答してください。: <a href="{group_url_with_id}" target="_blank">リンク</a>', unsafe_allow_html=True)
             else:
