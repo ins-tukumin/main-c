@@ -1,5 +1,6 @@
 ignore_files/
 vector_program/csvs/mainfiles
+vector_program/csvs/testfiles
 vector_program/pdfs
 vector_program/pdfs2
 .Rproj.user
