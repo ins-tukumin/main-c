@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 # CSVファイルの読み込み
-file_path = 'mainfiles/1004.csv'
+file_path = 'mainfiles/analysis/2ndexp/1214.csv'
 df = pd.read_csv(file_path)
 
 # 抜き出したい列名をリストで指定 'Q1' or 'Q34'
@@ -17,7 +17,7 @@ df['user_id'] = df['user_id'].astype(str)
 df['StartDate'] = pd.to_datetime(df['StartDate'])
 
 # 2024-09-28 12:05:00以降のデータをフィルタリング
-df = df[df['StartDate'] >= pd.Timestamp("2024-10-04 12:05:00")]
+df = df[df['StartDate'] >= pd.Timestamp("2024-11-23 12:35:00")]
 
 # 指定した列だけを抜き出す（コピーではなく.locを使って操作）
 df_selected = df.loc[:, desired_columns]
@@ -58,17 +58,17 @@ df_selected.rename(columns={'Q30': 'understanding'}, inplace=True)
 id_counts = df['user_id'].value_counts()
 
 # 2回以上出現する user_id を抽出-----
-repeated_ids = id_counts[id_counts >= 2]
+repeated_ids = id_counts[id_counts < 3]
 
 # 結果を表示-----
-print("2回以上出現する user_id:")
+print("3回未満出現する user_id:")
 print(repeated_ids)
 
 desired_order = ['StartDate', 'PANAS_P', 'PANAS_N', 'competence', 'warmth', 'satisfaction','effectiveness','efficiency','willingness','understanding', 'user_id', 'group']
 
 df_selected = df_selected.reindex(columns=desired_order)
 
-output_csv = 'mainfiles/analysis/1004_selected_renamed.csv'  # 出力ファイルのパスを指定してください
+output_csv = 'mainfiles/analysis/2ndexp/1214_for_analysis.csv'  # 出力ファイルのパスを指定してください
 
 # 対象の列リスト
 columns_to_calculate = [
