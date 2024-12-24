@@ -85,7 +85,7 @@ for dependent_var in dependent_variables:
     plt.legend()
     plt.grid(False)
     # plt.show()
-    plt.savefig(f"topic_SVGs/{dependent_var}_regression_plot.svg", format="svg")
+    # plt.savefig(f"topic_SVGs/{dependent_var}_regression_plot.svg", format="svg")
     plt.close()  # プロットを閉じてメモリを解放
 
 # 結果をデータフレームに変換

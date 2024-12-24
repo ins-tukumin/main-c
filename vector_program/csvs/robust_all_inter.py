@@ -21,8 +21,8 @@ df['group_c'] = (df['group'] == 'groupc').astype(int)
 df['group_flag'] = (df['group'] == 'groupc').astype(int)
 
 # 説明変数と従属変数の指定
-# explanatory_variable = 'stan_topic_count'  # 説明変数
-explanatory_variable = 'stan_topic_count' 
+# explanatory_variable = 'ave_cos_BERT_diary_Human_count'  # 説明変数
+explanatory_variable = 'ave_cos_BERT_diary_Human_count' 
 dependent_variables = [
     'ave_PANAS_P', 'ave_PANAS_N',
     'ave_competence', 'ave_warmth',
@@ -31,8 +31,8 @@ dependent_variables = [
 
 # 説明変数とgroup_flagを標準化
 scaler = StandardScaler()
-# df[['stan_topic_count', 'group_flag']] = scaler.fit_transform(df[['stan_topic_count', 'group_flag']])
-df[['stan_topic_count', 'group_c']] = scaler.fit_transform(df[['stan_topic_count', 'group_c']])
+# df[['ave_cos_BERT_diary_Human_count', 'group_flag']] = scaler.fit_transform(df[['ave_cos_BERT_diary_Human_count', 'group_flag']])
+df[['ave_cos_BERT_diary_Human_count', 'group_c']] = scaler.fit_transform(df[['ave_cos_BERT_diary_Human_count', 'group_c']])
 
 # 交互作用項を作成
 df['interaction'] = df[explanatory_variable] * df['group_c']
@@ -59,8 +59,8 @@ def run_robust_regression(dependent_var):
     delta = 1.345 * residuals_std
     print(f'Using Huber threshold (delta) for dependent variable {dependent_var}: {delta}')
 
-    # 説明変数（stan_topic_count, group_c, interaction）を含むデザイン行列を作成
-    X = sm.add_constant(df[['stan_topic_count', 'group_c', 'interaction']])
+    # 説明変数（ave_cos_BERT_diary_Human_count, group_c, interaction）を含むデザイン行列を作成
+    X = sm.add_constant(df[['ave_cos_BERT_diary_Human_count', 'group_c', 'interaction']])
 
     # ロバスト回帰の実行（Huber’s T normを使用）
     model = sm.RLM(y, X, M=norms.HuberT(t=delta)).fit()
@@ -81,8 +81,8 @@ def run_robust_regression(dependent_var):
 
     # プロットの作成
     plt.figure(figsize=(8, 6))
-    plt.scatter(df['stan_topic_count'], y, label='Data')
-    plt.plot(df['stan_topic_count'], model.predict(X), color='red', label='Fit')
+    plt.scatter(df['ave_cos_BERT_diary_Human_count'], y, label='Data')
+    plt.plot(df['ave_cos_BERT_diary_Human_count'], model.predict(X), color='red', label='Fit')
 
     # 軸のフォントサイズの設定
     font_size = 20  # 任意のフォントサイズ
@@ -91,7 +91,7 @@ def run_robust_regression(dependent_var):
 
     # タイトルとラベルの設定
     plt.title(f'Robust Regression: {dependent_var} ~ {explanatory_variable} + group_c + interaction')
-    plt.xlabel('Standardized stan_topic_count')
+    plt.xlabel('Standardized ave_cos_BERT_diary_Human_count')
     plt.ylabel(dependent_var)
 
     plt.xlim(-0.02, 1.02)  # X軸の範囲
