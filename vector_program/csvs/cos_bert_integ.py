@@ -19,24 +19,6 @@ db = firestore.client()
 # ===== Sentence-BERTモデルの準備 =====
 model_sbert = SentenceTransformer('paraphrase-xlm-r-multilingual-v1')
 
-# ===== 形態素解析を行い、指定された品詞を抽出する関数 =====
-def mecab_tokenize_with_filter(text, filter_pos=None):
-    if filter_pos is None:
-        filter_pos = ['名詞', '動詞', '形容詞']
-    mecab = MeCab.Tagger()
-    node = mecab.parseToNode(text)
-    words = []
-    while node:
-        pos = node.feature.split(",")[0]
-        if pos in filter_pos:
-            words.append(node.surface)
-        node = node.next
-    return " ".join(words)
-
-# ===== 複数のテキストをまとめて形態素解析する関数 =====
-def prepare_texts(texts, filter_pos=None):
-    return " ".join([mecab_tokenize_with_filter(text, filter_pos) for text in texts])
-
 # ===== Sentence-BERTでのコサイン類似度計算関数 =====
 def get_mean_sentence_embedding(text_list, model):
     embeddings = model.encode(text_list)
