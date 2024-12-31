@@ -15,7 +15,7 @@ df = df[df['group'] != 'groupb']
 df['group_flag'] = (df['group'] == 'groupc').astype(int)
 
 # 説明変数と従属変数の指定
-explanatory_variable = 'ave_cos_BERT_diary_Human' 
+explanatory_variable = 'stan_topic_count' 
 # explanatory_variable = 'stan_topic_count'  # 元の説明変数
 dependent_variables = [
     'ave_PANAS_P', 'ave_PANAS_N',
@@ -26,10 +26,10 @@ dependent_variables = [
 # 説明変数とgroup_flagを標準化
 scaler = StandardScaler()
 # df[['stan_topic_count', 'group_flag']] = scaler.fit_transform(df[['stan_topic_count', 'group_flag']])
-df[['ave_cos_BERT_diary_Human', 'group_flag']] = scaler.fit_transform(df[['ave_cos_BERT_diary_Human', 'group_flag']])
+df[['stan_topic_count', 'group_flag']] = scaler.fit_transform(df[['stan_topic_count', 'group_flag']])
 
 # 交互作用項を追加
-df['interaction'] = df['ave_cos_BERT_diary_Human'] * df['group_flag']
+df['interaction'] = df['stan_topic_count'] * df['group_flag']
 
 # 結果を格納するリスト
 results_list = []
@@ -40,7 +40,7 @@ for dependent_var in dependent_variables:
     y = df[dependent_var]
 
     # 説明変数に定数項を追加（重回帰分析のため）
-    X = sm.add_constant(df[['ave_cos_BERT_diary_Human', 'group_flag', 'interaction']])
+    X = sm.add_constant(df[['stan_topic_count', 'group_flag', 'interaction']])
 
     # 回帰分析の実行
     model = sm.OLS(y, X).fit()
@@ -71,8 +71,8 @@ for dependent_var in dependent_variables:
 
     # プロットの作成
     plt.figure(figsize=(8, 6))
-    plt.scatter(df['ave_cos_BERT_diary_Human'], y, label='Data')
-    plt.plot(df['ave_cos_BERT_diary_Human'], predictions, color='red', label='Fit')
+    plt.scatter(df['stan_topic_count'], y, label='Data')
+    plt.plot(df['stan_topic_count'], predictions, color='red', label='Fit')
 
     # タイトルとラベルの設定
     plt.title(f'Regression: {dependent_var} ~ Standardized Variables')
