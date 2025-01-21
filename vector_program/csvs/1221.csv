@@ -1,0 +1,13 @@
+week1_group,dependent_var,residuals_std
+groupa,week1_PANAS_P,1.2230539372179452
+groupa,week1_PANAS_N,0.6712597697258545
+groupa,week1_competence,1.0744142165214
+groupa,week1_warmth,0.6856929254148331
+groupa,week1_willingness,1.042413903622556
+groupa,week1_understanding,1.091612838220559
+groupc,week1_PANAS_P,0.768217440620218
+groupc,week1_PANAS_N,0.8602565293449392
+groupc,week1_competence,0.6567395877481249
+groupc,week1_warmth,0.37114602321898776
+groupc,week1_willingness,0.698688478250824
+groupc,week1_understanding,0.7850809230521519

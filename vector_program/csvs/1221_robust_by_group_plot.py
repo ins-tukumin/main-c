@@ -15,7 +15,7 @@ df = pd.read_csv('BIGBERT.csv')
 df = df[df['group'] != 'groupb']
 
 # Specify explanatory and dependent variables
-explanatory_variable = 'stan_topic_count'
+explanatory_variable = 'ave_cos_BERT_diary_Human'
 dependent_variables = [
     'ave_PANAS_P', 'ave_PANAS_N',
     'ave_competence', 'ave_warmth',
@@ -74,7 +74,7 @@ def run_robust_regression_and_plot(dependent_var):
 
         # Scatter plot and regression line
         plt.scatter(group_df[explanatory_variable], y, color=group_colors[group_value])
-        plt.plot(group_df[explanatory_variable], predictions, color=group_colors[group_value])
+        #plt.plot(group_df[explanatory_variable], predictions, color=group_colors[group_value])
 
     # 軸のフォントサイズの設定
     font_size = 20  # 任意のフォントサイズ
@@ -84,16 +84,18 @@ def run_robust_regression_and_plot(dependent_var):
     # Add labels, legend, and title
     #plt.title(f'Regression: {dependent_var} ~ {explanatory_variable}')
     #plt.xlabel('Human-Diary')
-    #plt.ylabel(dependent_var)
+    #plt.ylabel("Mean Value")
     # plt.title(f'Robust Regression: {dependent_var} ~ {explanatory_variable}')
     plt.xlim(-0.02, 1.02)  # X軸の範囲
     plt.yticks(np.arange(1.0, 6.0, 1.0))
     plt.ylim(0.9, 5.1)  # Y軸の範囲
+    #plt.ylabel(rotation=90)  # X軸ラベルを45度回転
     plt.legend()
     plt.grid(False)
 
     # Save combined plot as SVG
-    plt.savefig(f"topic_SVGs/{dependent_var}_combined_regression_plot.svg", format="svg")
+    # plt.savefig(f"topic_SVGs/{dependent_var}_combined_regression_plot.svg", format="svg")
+    plt.show()
     plt.close()  # Close the plot to free memory
 
 # Perform robust regression and create combined plots for each dependent variable
