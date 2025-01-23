@@ -9,9 +9,10 @@ groupa = df[df['group'] == 'groupa']
 groupc = df[df['group'] == 'groupc']
 
 # 比較する列のリスト
-columns_to_test = ['ave_PANAS_P', 'ave_PANAS_N',
-    'ave_competence', 'ave_warmth',
-    'ave_willingness', 'ave_understanding']  # 指定した列をここに記載
+columns_to_test = [#'ave_PANAS_P', 'ave_PANAS_N',
+    #'ave_competence', 'ave_warmth',
+    #'ave_willingness', 'ave_understanding'
+    'ave_cos_diary_Human', 'stan_topic_count']  # 指定した列をここに記載
 
 # 結果を格納するリスト
 results = []

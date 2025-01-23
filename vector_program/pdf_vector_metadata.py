@@ -17,7 +17,7 @@ db_directory = "../vector_2nd"
 # 日記データを日付ごとに分割する関数
 def split_entries_by_date(text):
     entries = []
-    pattern = r"([0-9０-９]{2}月[0-9０-９]{2}日)"  # 日付のパターンを正規表現で定義
+    pattern = r"([0-9０-９]{1}月[0-9０-９]{2}日)"  # 日付のパターンを正規表現で定義 ここ、１月なら｛１｝、１０月なら｛２｝
     sections = re.split(pattern, text)
     for i in range(1, len(sections), 2):
         date = sections[i].strip()      # 日付を取得
