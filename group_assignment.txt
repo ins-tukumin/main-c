@@ -162,4 +162,4 @@ yoimachigusa,groupc
 1798984,groupa
 1268168,groupa
 2928860,groupa
-1234567890,groupc
+1234567890,groupa
